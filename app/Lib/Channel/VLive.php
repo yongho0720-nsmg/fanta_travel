@@ -16,14 +16,16 @@ class VLive extends ChannelAbstractClass
     private $channelImagePath = 'images/vlive/thumbnail/';
     private $channelViedeoPath = 'videos/vlive/';
 
-    private $vLiveContentsUrl = 'https://api-vfan.vlive.tv/v2/channel.13/home';
+    private $vLiveContentsUrl = 'https://api-vfan.vlive.tv/v2/channel.%s/home';
     private $vLiveDetailContentUrl = 'https://www.vlive.tv/video/%s';
     private $vLiveDetailContentJsonUrl = 'http://global.apis.naver.com/rmcnmv/rmcnmv/vod_play_videoInfo.json?key=%s&pid=&sid=2024&ver=2.0&devt=html5_pc&doct=json&ptc=http&cpt=vtt&cpl=zh_CN&lc=zh_CN&videoId=%s&cc=CN';
 
-    public function __construct($appId, $account)
+    public function __construct($appId, $account, $channelId ,$artistsId)
     {
         $this->appId = $appId;
         $this->account = $account;
+        $this->artistsId = $artistsId;
+        $this->channelId = $channelId;
     }
 
     public function getChannelContents()
@@ -35,9 +37,10 @@ class VLive extends ChannelAbstractClass
             'app_id' => $this->appId,
         ];
         $chk = true;
+        $cnt =0;
         while ($chk) {
 
-            $contentsUrl = $this->vLiveContentsUrl . '?' . http_build_query($params);
+            $contentsUrl = sprintf($this->vLiveContentsUrl, $this->channelId) . '?' . http_build_query($params);
             $response = $client->get($contentsUrl);
             if ($response->getStatusCode() !== 200) {
                 Log::error(__METHOD__ . ' - get vlive response code is not 200 - ' . json_encode($response));
@@ -53,7 +56,8 @@ class VLive extends ChannelAbstractClass
             foreach ($contentList as $content) {
                 parent::$maxCnt++;
                 $dupleCheck = $this->isValidation($content);
-                if ($dupleCheck) {
+                $cnt++;
+                if ($dupleCheck || $cnt > 50) {
                     Log::warning(__METHOD__ . ' - duple data  - ' . json_encode($content));
                     break 2;
                 }
@@ -62,6 +66,7 @@ class VLive extends ChannelAbstractClass
                     Log::info(__METHOD__ . ' - board - ' . json_encode($board));
                     continue;
                 }
+                $board['artists_id'] = $this->artistsId;
                 parent::saveData($board);
             }
         }
@@ -213,6 +218,7 @@ class VLive extends ChannelAbstractClass
             'app_id' => $this->appId,
         ];
         $chk = true;
+        $cnt = 0;
         while ($chk) {
 
             $contentsUrl = $this->vLiveContentsUrl . '?' . http_build_query($params);
@@ -230,14 +236,14 @@ class VLive extends ChannelAbstractClass
             Log::debug(__METHOD__ . ' - key  - ' . $params['next'] . ' - chk -' . json_encode($chk));
 
             foreach ($contentList as $content) {
-
+                $cnt++;
                 $dupleCheck = $this->isValidation($content);
-                if ($dupleCheck) {
+                if ($dupleCheck || $cnt > 50 ) {
                     continue;
                 }
 
                 $board = $this->setDataFormatting($content);
-
+                $board['artists_id'] = $this->artistsId;
                 parent::saveData($board);
             }
         }

@@ -19,16 +19,16 @@ class ChannelFactory extends ChannelAbstractClass
     {
         switch ($crawler->type) {
             case ChannelType::CHANNEL_YOUTUBE :
-                $this->channel = new Youtube($crawler->auth->apiKey, $crawler->auth->channelId);
+                $this->channel = new Youtube($crawler->auth->apiKey, $crawler->auth->channelId, $crawler->artists_id);
                 break;
             case ChannelType::CHANNEL_VLIVE :
-                $this-> channel = new VLive($crawler->auth->appId, $crawler->auth->account);
+                $this-> channel = new VLive($crawler->auth->appId, $crawler->auth->account, $crawler->auth->channelId, $crawler->artists_id);
                 break;
             case ChannelType::CHANNEL_TWITTER:
-                $this->channel = new Twitter($crawler->auth->screen_name);
+                $this->channel = new Twitter($crawler->auth->screen_name, $crawler->artists_id);
                 break;
             case ChannelType::CHANNEL_INSTAGRAM:
-                $this->channel = new Instagram($crawler->auth->channelKey);
+                $this->channel = new Instagram($crawler->auth->channelKey, $crawler->artists_id);
         }
         return $this->channel;
     }

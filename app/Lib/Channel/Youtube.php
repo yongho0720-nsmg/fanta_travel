@@ -14,15 +14,17 @@ class Youtube extends ChannelAbstractClass
 {
     private $channelId;
     private $apiKey;
+    private $artistsId;
     private $channelType = 'youtube';
     private $channelImagePath = 'images/youtube/thumbnail';
     private $channelViedeoPath = 'videos/youtube/';
 
 
-    public function __construct($apiKey, $channelId)
+    public function __construct($apiKey, $channelId, $artistsId)
     {
         $this->channelId = $channelId;
         $this->apiKey = $apiKey;
+        $this->artistsId = $artistsId;
     }
 
     public function getChannelContents()
@@ -32,6 +34,8 @@ class Youtube extends ChannelAbstractClass
         $currentCnt = 0;
         $perCnt = 10;
         $totalCnt = 20;
+
+        $cnt =0;
 
         $params = [
             'type' => 'video',
@@ -54,11 +58,13 @@ class Youtube extends ChannelAbstractClass
 
             foreach ($channel->results as $key => $content) {
                 $dupleChk = $this->isValidation($content);
-                if ($dupleChk) {
+                $cnt++;
+                if ($dupleChk || $cnt > 20) {
                     break 2;
                 }
                 $videos = YoutubeApi::getVideoInfo($this->parsingPost($content), ['id', 'snippet', 'contentDetails', 'player', 'statistics', 'status']);
                 $board = $this->setDataFormatting($videos);
+                $board['artists_id'] = $this->artistsId;
                 parent::saveData($board);
             }
         }
@@ -131,6 +137,8 @@ class Youtube extends ChannelAbstractClass
         $perCnt = 10;
         $totalCnt = 20;
 
+        $cnt = 0;
+
         $params = [
             'type' => 'video',
             'channelId' => $this->channelId,
@@ -151,11 +159,13 @@ class Youtube extends ChannelAbstractClass
 
             foreach ($channel->results as $key => $content) {
                 $dupleChk = $this->isValidation($content);
-                if ($dupleChk) {
+                $cnt++;
+                if ($dupleChk || $cnt > 20) {
                     continue;
                 }
                 $videos = YoutubeApi::getVideoInfo($this->parsingPost($content), ['id', 'snippet', 'contentDetails', 'player', 'statistics', 'status']);
                 $board = $this->setDataFormatting($videos);
+                $board['artists_id'] = $this->artistsId;
                 parent::saveData($board);
             }
         }

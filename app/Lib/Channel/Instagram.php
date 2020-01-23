@@ -17,9 +17,11 @@ class Instagram extends ChannelAbstractClass
     private $channelImagePath = 'images/instagram/thumbnail/';
     private $channelViedeoPath = 'videos/instagram/';
 
-    public function __construct($channelKey)
+    public function __construct($channelKey, $artistsId)
     {
         $this->channelKey = $channelKey;
+        $this->artistsId = $artistsId;
+
     }
 
     public function getChannelContents()
@@ -28,21 +30,25 @@ class Instagram extends ChannelAbstractClass
         $instagramPageObj = $instagram->getPaginateMedias($this->channelKey);
         $instagramPageObj['hasNextPage'] = true;
 
+        $cnt =0;
+
         while ($instagramPageObj['hasNextPage'] === true) {
 
             foreach ($instagramPageObj['medias'] as $key => $media) {
                 Log::info(__METHOD__.' - media - '.json_encode($media));
-
+                $cnt++;
                 $duplicationCheck = $this->isValidation( $media);
-                if (!empty($duplicationCheck)) {
+                if (!empty($duplicationCheck) || $cnt > 30) {
                     $instagramPageObj['hasNextPage'] = false;
                     break 2;
                 }
+
 
                 $media = $instagram->getMediaById($media->getId());
                 $detailMedias = $media->getSidecarMedias();
 
                 $board = $this->setDataFormatting($media);
+                $board['artists_id'] = $this->artistsId;
                 parent::saveData($board);
             }
             $instagramPageObj = $instagram->getPaginateMedias($this->channelKey, $instagramPageObj['maxId']);
@@ -114,9 +120,8 @@ class Instagram extends ChannelAbstractClass
                         $this->channelViedeoPath);
                     $data[$detailMediaKey]['video']['poster'] = "/" . $this->channelImagePath . $thumbnail['fileName'];
 
-                    $thumbnail = $util->AzureUploadImage($detailMedia->getVideoStandardResolutionUrl(),
-                        $this->channelViedeoPath);
-                    $data[$detailMediaKey]['video']['src'] = "/" .$this->channelViedeoPath. $thumbnail['fileName'];
+                    //$thumbnail = $util->AzureUploadImage($detailMedia->getVideoStandardResolutionUrl(), $this->channelViedeoPath);
+                    //$data[$detailMediaKey]['video']['src'] = "/" .$this->channelViedeoPath. $thumbnail['fileName'];
                 }
             }
         }
@@ -133,21 +138,25 @@ class Instagram extends ChannelAbstractClass
     {
         $instagram = new \InstagramScraper\Instagram();
         $instagramPageObj = $instagram->getPaginateMedias($this->channelKey);
+        $cnt =0;
 
         while ($instagramPageObj['hasNextPage'] === true) {
             foreach ($instagramPageObj['medias'] as $key => $media) {
 //            2147750277683272319
 
                 $duplicationCheck = $this->isValidation($media);
-                if (!empty($duplicationCheck)) {
+                if (!empty($duplicationCheck) || $cnt > 30) {
                     $instagramPageObj['hasNextPage'] = false;
                     break;
                 }
+
+                $cnt++;
 
                 $media = $instagram->getMediaById($media->getId());
                 $detailMedias = $media->getSidecarMedias();
 
                 $board = $this->setDataFormatting($media);
+                $board['artists_id'] = $this->artistsId;
                 parent::saveData($board);
             }
             $instagramPageObj = $instagram->getPaginateMedias($this->channelKey, $instagramPageObj['maxId']);
