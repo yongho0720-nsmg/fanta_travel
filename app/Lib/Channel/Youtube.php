@@ -23,7 +23,8 @@ class Youtube extends ChannelAbstractClass
     public function __construct($apiKey, $channelId, $artistsId)
     {
         $this->channelId = $channelId;
-        $this->apiKey = $apiKey;
+        //$this->apiKey = $apiKey;
+        $this->apiKey = "AIzaSyA9j0v3wdPm_NjL-VEfNX7MFT84AO_90zw";
         $this->artistsId = $artistsId;
     }
 
