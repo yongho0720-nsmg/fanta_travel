@@ -34,7 +34,7 @@ class LobbyClassv6
         $board_select_query = Board::where('app', $app)
             ->where('type', '!=', 'fanfeed')
             ->where('state', 1)
-            ->orderby('created_at', 'desc')
+            ->orderby('recorded_at', 'desc')
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
 
         if (!($board_select_query->hasMorePages())) {

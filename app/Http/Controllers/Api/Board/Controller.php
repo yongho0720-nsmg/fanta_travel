@@ -190,7 +190,7 @@ class Controller extends baseController
         $user = Auth('api')->user();
 
         $params = [
-            'app' => $request->input('app', 'bts'),
+            'app' => $request->input('app', 'fantaholic'),
             'next_token' => $request->input('next_page', 0),
         ];
 
