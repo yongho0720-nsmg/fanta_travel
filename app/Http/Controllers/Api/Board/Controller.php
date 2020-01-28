@@ -193,7 +193,7 @@ class Controller extends baseController
             'app' => $request->input('app', 'fantaholic'),
             'next_token' => $request->input('next_page', 0),
         ];
-
+        dd($params);
 //        $response = $this->redis->get("{$params['app']}:Lobby:V2:page:{$params['next_token']}");
 
         $lobbyClass = new LobbyClassv6();
