@@ -133,6 +133,9 @@ Route::group(['prefix'=>'/boards'],function(){
     Route::get('/list_like_board','Api\Board\Controller@list_like_board')->middleware('auth:api');//좋아요 리스트
 //    Route::get('/V6/event_list','Api\Board\Controller@event_list_v6'); //이벤트 리스트V6 기획변경으로인해 안씀 이미 배포된 앱에서 사용중이라 냅둠
 
+    Route::get('/get_list_artist/{type}','Api\Board\Controller@get_list_artist');//아티스트 리스트 
+
+
     Route::post('/like','Api\Board\Controller@like')->middleware('auth:api'); //게시물 좋아요 && 마이핀 저장
     Route::post('/board_like','Api\Board\Controller@board_like'); //게시물 좋아요 && 마이핀 저장
     Route::post('/ban','Api\Board\Controller@ban')->middleware('auth:api'); //게시물 싫어요

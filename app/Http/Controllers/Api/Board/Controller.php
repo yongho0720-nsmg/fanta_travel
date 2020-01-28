@@ -208,6 +208,30 @@ class Controller extends baseController
         return $this->response->set_response(0, $response);
     }
 
+    //아티스트 리스트
+    public function get_list_artist(Request $request, $type)
+    {
+        $user = Auth('api')->user();
+
+        $params = [
+            'type' => $type,
+            'app' => $request->input('app', 'fantaholic'),
+            'next_token' => $request->input('next_page', 0),
+        ];
+
+//        $response = $this->redis->get("{$params['app']}:Lobby:V2:page:{$params['next_token']}");
+
+        $lobbyClass = new LobbyClassv6();
+        $response = $lobbyClass->makeArtistList($params['app'], $params['next_token'], $params['type']);
+        if (!isset($response['body']) || (isset($response['body']) && count($response['body']) == 0)) {
+            return $this->response->set_response(-2001, null);
+        }
+        $response['shared_url'] = config('celeb')[$params['app']]['shared_url'];
+        $response['count'] = count($response['body']);
+        //$response['body'] = $lobbyClass->list_parsing($response['body'], $user);
+        return $this->response->set_response(0, $response);
+    }
+
     //단일 리스트 v6
     public function single_list_v6(Request $request, $type)
     {

@@ -7,6 +7,7 @@ use App\UserItem;
 use App\UserResponseToBoard;
 use App\UserResponseToComment;
 use App\Board;
+use App\Artist;
 use App\UserScoreLog;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -168,6 +169,7 @@ class LobbyClassv6
         }
         return $parsing_results;
     }
+
 
     //앨범 리스트 파싱
     public function album_parsing($albums, $app, $user = null)
@@ -593,6 +595,41 @@ class LobbyClassv6
         }
 
         return substr($duration_string,3,5) ;
+    }
+
+    //아티스트 리스
+    public function makeArtistList($app, $next_token = 1, $type)
+    {
+        // Redis Connection
+        if ($next_token == 0) {
+            $next_token = 1;
+        }
+        $this->type = $type;
+        $page_count = 20;
+        $board_select_query = Artist::where('app', $app)
+            ->when(($type != 'all'), function ($query) {
+                return $query->where('team_type', '=', $this->type);
+            })
+            ->orderby('created_at', 'desc')
+            ->Paginate($page_count, ['*'], 'next_page', $next_token);
+
+        if (!($board_select_query->hasMorePages())) {
+            $next_page = -1;
+        } else {
+            $next_page = $next_token + 1;
+        }
+
+        $this->config = app('config')['celeb'][$app];
+        $response['cdn_url'] = $this->config['cdn'];
+        $response['next_page'] = $next_page;
+        $response['body'] = $board_select_query->items();
+
+        // Redis Cache
+//        $this->redis = app('redis');
+//        $this->redis->set("{$app}:Lobby:V2:page:{$next_token}", json_encode($response));
+//        $this->redis->expire("{$app}:Lobby:V2:page:{$next_token}", 3600);
+
+        return $response;
     }
 
 }
