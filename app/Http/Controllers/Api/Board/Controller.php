@@ -88,7 +88,7 @@ class Controller extends baseController
         $user = Auth('api')->user();
 
         $params = [
-            'app' => $request->input('app', 'bts'),
+            'app' => $request->input('app', 'fantaholic'),
             'users_id' => $user->id,
             'boards_id' => $request->input('board_id')
         ];
@@ -211,7 +211,7 @@ class Controller extends baseController
     //단일 리스트 v6
     public function single_list_v6(Request $request, $type)
     {
-        $app = $request->input('app', 'bts');
+        $app = $request->input('app', 'fantaholic');
         $util = new Util();
 
         // 1 ad_id 가 검수자인가? , 2 ip가 국내인가? 3 검수용 컨텐츠만 내보내는 중인가? app('config')['celeb']['pinxy']['inspection']
@@ -276,7 +276,7 @@ class Controller extends baseController
     //좋아요 게시물 리스트
     public function list_like_board(Request $request)
     {
-        $app = $request->input('app', 'bts');
+        $app = $request->input('app', 'fantaholic');
 
         //로그인한 유저인지 확인
         $user = Auth('api')->user();
