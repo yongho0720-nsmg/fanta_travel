@@ -24,7 +24,8 @@ class Youtube extends ChannelAbstractClass
     {
         $this->channelId = $channelId;
         //$this->apiKey = $apiKey;
-        $this->apiKey = "AIzaSyA9j0v3wdPm_NjL-VEfNX7MFT84AO_90zw";
+        //$this->apiKey = "AIzaSyA9j0v3wdPm_NjL-VEfNX7MFT84AO_90zw";
+        $this->apiKey = "AIzaSyBDk59oCrpsaqtbrVZE7fFd9hqeVNuuHhk";
         $this->artistsId = $artistsId;
     }
 
