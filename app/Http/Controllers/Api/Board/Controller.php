@@ -209,12 +209,12 @@ class Controller extends baseController
     }
 
     //아티스트 리스트
-    public function get_list_artist(Request $request, $type)
+    public function get_list_artist(Request $request)
     {
         $user = Auth('api')->user();
 
         $params = [
-            'type' => $type,
+            'type' => $request->input('type'),
             'app' => $request->input('app', 'fantaholic'),
             'next_token' => $request->input('next_page', 0),
         ];
@@ -226,9 +226,7 @@ class Controller extends baseController
         if (!isset($response['body']) || (isset($response['body']) && count($response['body']) == 0)) {
             return $this->response->set_response(-2001, null);
         }
-        $response['shared_url'] = config('celeb')[$params['app']]['shared_url'];
         $response['count'] = count($response['body']);
-        //$response['body'] = $lobbyClass->list_parsing($response['body'], $user);
         return $this->response->set_response(0, $response);
     }
 

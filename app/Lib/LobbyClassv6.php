@@ -171,6 +171,7 @@ class LobbyClassv6
     }
 
 
+
     //앨범 리스트 파싱
     public function album_parsing($albums, $app, $user = null)
     {
@@ -606,9 +607,11 @@ class LobbyClassv6
         }
         $this->type = $type;
         $page_count = 20;
+
         $board_select_query = Artist::where('app', $app)
             ->when(($type != 'all'), function ($query) {
-                return $query->where('team_type', '=', $this->type);
+                $type_arr = explode("," ,$this->type);  
+                return $query->whereIn('team_type', $type_arr);
             })
             ->orderby('created_at', 'desc')
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
