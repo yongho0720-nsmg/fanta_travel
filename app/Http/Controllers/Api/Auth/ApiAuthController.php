@@ -60,7 +60,6 @@ class ApiAuthController extends Controller
                 'fcm_token' => 'string'
             ]);
         } catch (ValidationException $e) {
-
             Log::error(__FILE__, __LINE__, $e->getMessage());
 
             return response()->json([
@@ -73,8 +72,7 @@ class ApiAuthController extends Controller
             ], 200);
         }
 
-        $app = $request->input('app', 'pinxy');
-
+        $app = $request->input('app', 'fantaholic');
         // 이메일 확인
         if (User::where('email', $request->email)->where('app', $app)->count() == 0) {
             return $this->response->set_response(-3003, null);

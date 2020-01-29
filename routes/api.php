@@ -133,7 +133,7 @@ Route::group(['prefix'=>'/boards'],function(){
     Route::get('/list_like_board','Api\Board\Controller@list_like_board')->middleware('auth:api');//좋아요 리스트
 //    Route::get('/V6/event_list','Api\Board\Controller@event_list_v6'); //이벤트 리스트V6 기획변경으로인해 안씀 이미 배포된 앱에서 사용중이라 냅둠
 
-    Route::get('/get_list_artist/','Api\Board\Controller@get_list_artist');//아티스트 리스트 
+    Route::get('/get_list_artist/','Api\Board\Controller@get_list_artist');//아티스트 리스트
 
 
     Route::post('/like','Api\Board\Controller@like')->middleware('auth:api'); //게시물 좋아요 && 마이핀 저장
@@ -184,6 +184,11 @@ Route::group(['prefix' => 'musics'], function () {
     Route::get('/videos','Api\Music\Controller@music_video_list');  // 뮤직 비디오 리스트//todo 2019-11-13 이후 앱배포시 삭제
     Route::get('/videos/V2','Api\Music\Controller@music_video_list_v2');  // 뮤직 비디오 리스트v2
     Route::get('/videos/V3','Api\Music\Controller@music_video_list_v3');  // 뮤직 비디오 리스트v3
+});
+
+Route::group(['prefix' => 'follows'], function () {
+  Route::post('/','Api\Follow\Controller@index')->middleware('auth:api'); // 팔로우
+  Route::post('/delete','Api\Follow\Controller@unfollow')->middleware('auth:api'); // 언팔로우
 });
 
 Route::group(['prefix' => 'albums'], function () {
