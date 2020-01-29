@@ -22,26 +22,31 @@ class Controller extends baseController
     {
         $this->response = new Response();
     }
+    
     //팔로우
     public function index(Request $request){
 
         $user = Auth('api')->user();
 
-        $params = [
-            'artist_id' =>  $request->input('artist_id'),
-            'user_id'  =>  $user->id
-        ];
-
-        if(!$params['artist_id']){
+        if(!$request->input('artist_id')){
             return $this->response->set_response(-2001,null);
         }
 
-        $result = Follow::create($params);
+        $artist_id_arr = explode(",",$request->input('artist_id'));
+
+        Follow::where('user_id', '=', $user->id)->delete();// 팔로우 초기화
+
+        foreach($artist_id_arr as $artist_id){
+          $params = [
+              'artist_id' =>  $artist_id,
+              'user_id'  =>  $user->id
+          ];
+
+          $result = Follow::create($params); // 팔로우 등록
+        }
 
         $data = [
-            'artist_id'    =>  $params['user_id'],
-            'user_id'   => $params['artist_id'],
-            'follow_id'   => $result->id
+            'follow'   => count($artist_id_arr)
         ];
 
         return $this->response->set_response(0,$data);
