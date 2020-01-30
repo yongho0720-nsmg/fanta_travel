@@ -74,7 +74,7 @@ class Util
             $file->getClientOriginalName());
         $filename = $app . '_' . $type . '_' . Carbon::now()->timestamp . '_' . $filename;
 
-        Storage::disk('azure')->put("bts/{$path}/{$filename}", file_get_contents($file));
+        Storage::disk('azure')->put("fantaholic/{$path}/{$filename}", file_get_contents($file));
         list($original_width, $original_height) = getimagesize($file);
 
         $result['filename'] = $filename;
@@ -89,7 +89,7 @@ class Util
             $fileName);
         $filename = $app . '_' . $type . '_' . Carbon::now()->timestamp . '_' . $filename;
 
-        Storage::disk('azure')->put("bts/{$path}_/{$filename}", file_get_contents($filePath));
+        Storage::disk('azure')->put("fantaholic/{$path}_/{$filename}", file_get_contents($filePath));
         list($original_width, $original_height) = getimagesize($filePath);
 
         $result['filename'] = $filename;
@@ -153,7 +153,7 @@ class Util
         $filename = Carbon::now()->timestamp . '_' . $filename;
 
         //laravel 일떄 azure 파일 업로드
-        Storage::disk('azure')->put("bts/{$path}/{$filename}", file_get_contents($file));
+        Storage::disk('azure')->put("fantaholic/{$path}/{$filename}", file_get_contents($file));
 
         // lumen 일때 저장방법
 //        $account_name = app('config')['filesystems']['disks']['azure']['name'];
@@ -435,7 +435,7 @@ class Util
         $filename = Carbon::now()->timestamp . '_' . $filename;
 
         //laravel 일떄 azure 파일 업로드
-        Storage::disk('azure')->put("bts/{$path}/{$filename}", file_get_contents($file));
+        Storage::disk('azure')->put("fantaholic/{$path}/{$filename}", file_get_contents($file));
 
         // lumen 일때 저장방법
 //        $account_name = app('config')['filesystems']['disks']['azure']['name'];
@@ -485,7 +485,7 @@ class Util
             $video->frame(TimeCode::fromSeconds($time_to_image))
                 ->save($thumbnail_path . '/' . $poster_image_name);
 
-            Storage::disk('azure')->put("bts/{$path}/{$poster_image_name}",
+            Storage::disk('azure')->put("fantaholic/{$path}/{$poster_image_name}",
                 file_get_contents($thumbnail_path . '/' . $poster_image_name));
 
             //저장한 로컬 동영상 포스터 이미지 삭제
@@ -517,7 +517,7 @@ class Util
     public function validatePurchase($param)
     {
         $params = [
-            'package_name' => 'com.celeb.tube.bts',
+            'package_name' => 'com.celeb.tube.fantaholic',
             'product_id' => $param['product_id'],
             'purchase_token' => $param['purchase_token']
         ];
