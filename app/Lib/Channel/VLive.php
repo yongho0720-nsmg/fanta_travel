@@ -174,9 +174,9 @@ class VLive extends ChannelAbstractClass
                 if (!empty($vliveModel->videos) && count($vliveModel->videos->list) > 1) {
                     foreach ($vliveModel->videos->list as $video) {
                         //화질이 1920 미만은 패스
-                        if ($video->encodingOption->width < 1920) {
+                        /*if ($video->encodingOption->width < 1920) {
                             continue;
-                        }
+                        }*/
                         $videoSource = $video->source;
                         //$response = $util->AzureUploadImage($videoSource, $this->channelViedeoPath);
                         //$data[0]['video']['src'] = "/" . $this->channelViedeoPath . '/' . $response['fileName'];
