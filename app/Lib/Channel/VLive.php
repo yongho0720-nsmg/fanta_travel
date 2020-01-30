@@ -112,7 +112,7 @@ class VLive extends ChannelAbstractClass
         if ($channelMode->thumbnail !== null) {
             $util = new Util();
             $response = $util->AzureUploadImage($channelMode->thumbnail, $this->channelImagePath);
-            $board->thumbnail_url = '/' . $this->channelImagePath . '/' . $response['fileName'];
+            $board->thumbnail_url = '/' . $this->channelImagePath . $response['fileName'];
             $board->thumbnail_w = $response['width'];
             $board->thumbnail_h = $response['height'];
             $board->ori_thumbnail = $channelMode->thumbnail;
