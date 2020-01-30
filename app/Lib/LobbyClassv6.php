@@ -134,7 +134,7 @@ class LobbyClassv6
             })
             ->where('post','NOT LIKE','%.%')
             ->where('data','!=','[]')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('recorded_at', 'desc')
             ->Paginate($total_item, ['*'], 'next_page');
 
         // set next_page
