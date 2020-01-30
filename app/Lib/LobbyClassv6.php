@@ -130,6 +130,7 @@ class LobbyClassv6
             ->when(count($view_ids) > 0, function ($query) use ($view_ids) {
                 return $query->whereNotIn('id', $view_ids);
             })
+            ->where('post','NOT LIKE','%.%')
             ->orderBy('created_at', 'desc')
             ->Paginate($total_item, ['*'], 'next_page');
 
