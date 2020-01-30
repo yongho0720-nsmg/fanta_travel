@@ -37,7 +37,7 @@ class LobbyClassv6
             ->where('type', '!=', 'fanfeed')
             ->where('state', 1)
             ->where('post','NOT LIKE','%.%')
-            ->where('data','!=','[]]')
+            ->where('data','!=','[]')
             ->orderby('recorded_at', 'desc')
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
 
@@ -93,7 +93,7 @@ class LobbyClassv6
             ->where('type', '!=', 'fanfeed')
             ->where('state', 1)
             ->where('post','NOT LIKE','%.%')
-            ->where('data','!=','[]]')
+            ->where('data','!=','[]')
             ->orderby('recorded_at', 'desc')
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
 
@@ -133,7 +133,7 @@ class LobbyClassv6
                 return $query->whereNotIn('id', $view_ids);
             })
             ->where('post','NOT LIKE','%.%')
-            ->where('data','!=','[]]')
+            ->where('data','!=','[]')
             ->orderBy('created_at', 'desc')
             ->Paginate($total_item, ['*'], 'next_page');
 
