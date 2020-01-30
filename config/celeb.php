@@ -4,7 +4,7 @@ return [
 
     'fantaholic' => [
         // CDN 주소
-        'cdn' => 'https://bts-cdn.azureedge.net',
+        'cdn' => 'https://fantaholic-cdn.azureedge.net/',
         // FCM 서버키
         'fcm_server_key'   => 'AAAAV7knT5g:APA91bGK1YlgsXe1Qt5jGTFRHPh_2fufOo45rzdGN9CYm_CRIVz3meEKjkkUbVaNqJJ4_pFBRNizW_lp9ub5OuuoGFU8yAfanEXVOHjyRdZjZhbuPgxynhW6md_mnKiOWpN8FTe8WjH3',
         //
