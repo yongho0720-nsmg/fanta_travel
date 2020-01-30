@@ -36,6 +36,7 @@ class LobbyClassv6
         $board_select_query = Board::where('app', $app)
             ->where('type', '!=', 'fanfeed')
             ->where('state', 1)
+            ->where('post','NOT LIKE','%.%')
             ->orderby('recorded_at', 'desc')
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
 
@@ -90,6 +91,7 @@ class LobbyClassv6
             })
             ->where('type', '!=', 'fanfeed')
             ->where('state', 1)
+            ->where('post','NOT LIKE','%.%')
             ->orderby('recorded_at', 'desc')
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
 
