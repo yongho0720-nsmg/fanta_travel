@@ -50,7 +50,7 @@ class Controller extends baseController
         ]);
 
         $params = [
-            'app' => $request->input('app', 'pinxy'),
+            'app' => $request->input('app', 'fantaholic'),
             'user_id' => $request->user()->id,
             'board_id' => $request->input('board_id')
         ];
@@ -185,7 +185,7 @@ class Controller extends baseController
         ]);
     }
 
-    //셀럽튜브용 로비 api -> pinxy 검수용 x 봤던 게시물 안보기 기능 x v6
+    //셀럽튜브용 로비 api ->
     public function mix_list_v6(Request $request)
     {
         $user = Auth('api')->user();
@@ -420,7 +420,7 @@ class Controller extends baseController
         ]);
 
         $params = [
-            'app' => $request->input('app', 'pinxy'),
+            'app' => $request->input('app', 'fantaholic'),
             'board_id' => $request->input('board_id'),
             'item_count' => $request->input('item_count')
         ];
@@ -950,7 +950,7 @@ class Controller extends baseController
     public function refresh(Request $request, $board_id)
     {
         $params = [
-            'app' => $request->input('app', 'pinxy'),
+            'app' => $request->input('app', 'fantaholic'),
         ];
         $user = Auth('api')->user();
         if ($user != null && UserResponseToBoard::where('app', $params['app'])->where('board_id',
@@ -979,7 +979,7 @@ class Controller extends baseController
     public function refresh_v2(Request $request, $board_id)
     {
         $params = [
-            'app' => $request->input('app', 'pinxy'),
+            'app' => $request->input('app', 'fantaholic'),
         ];
 
         $user = Auth('api')->user();
@@ -1044,7 +1044,7 @@ class Controller extends baseController
     public function board_info(Request $request, $board_id)
     {
         $params = [
-            'app' => $request->input('app', 'pinxy'),
+            'app' => $request->input('app', 'fantaholic'),
         ];
         $user = Auth('api')->user();
 
