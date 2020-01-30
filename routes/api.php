@@ -131,6 +131,7 @@ Route::group(['prefix'=>'/boards'],function(){
     Route::get('/V6/mix','Api\Board\Controller@mix_list_v6'); // type별로 섞어서 로비리스트V6 => 게시물 작성일자 최신순
     Route::get('/V6/{type}','Api\Board\Controller@single_list_v6');//개별 리스트V6
     Route::get('/list_like_board','Api\Board\Controller@list_like_board')->middleware('auth:api');//좋아요 리스트
+    Route::get('/get_list/{type}','Api\Board\Controller@get_list'); // 컨텐츠 리스트 
 //    Route::get('/V6/event_list','Api\Board\Controller@event_list_v6'); //이벤트 리스트V6 기획변경으로인해 안씀 이미 배포된 앱에서 사용중이라 냅둠
 
     Route::get('/get_list_artist/','Api\Board\Controller@get_list_artist');//아티스트 리스트

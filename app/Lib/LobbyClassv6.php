@@ -7,6 +7,7 @@ use App\UserItem;
 use App\UserResponseToBoard;
 use App\UserResponseToComment;
 use App\Board;
+use App\Follow;
 use App\Artist;
 use App\UserScoreLog;
 use Carbon\Carbon;
@@ -33,6 +34,60 @@ class LobbyClassv6
 
         $page_count = 20;
         $board_select_query = Board::where('app', $app)
+            ->where('type', '!=', 'fanfeed')
+            ->where('state', 1)
+            ->orderby('recorded_at', 'desc')
+            ->Paginate($page_count, ['*'], 'next_page', $next_token);
+
+        if (!($board_select_query->hasMorePages())) {
+            $next_page = -1;
+        } else {
+            $next_page = $next_token + 1;
+        }
+
+        $this->config = app('config')['celeb'][$app];
+        $response['cdn_url'] = $this->config['cdn'];
+        $response['next_page'] = $next_page;
+        $response['body'] = $board_select_query->items();
+
+        // Redis Cache
+//        $this->redis = app('redis');
+//        $this->redis->set("{$app}:Lobby:V2:page:{$next_token}", json_encode($response));
+//        $this->redis->expire("{$app}:Lobby:V2:page:{$next_token}", 3600);
+
+        return $response;
+    }
+
+    public function makeListPage($app, $next_token = 1, $type, $user_id, $artist_id)
+    {
+        // Redis Connection
+        if ($next_token == 0) {
+            $next_token = 1;
+        }
+
+        $page_count = 20;
+
+        $this->user_id = $user_id;
+        $this->artist_id = $artist_id;
+
+        $board_select_query = Board::when($this->user_id != '', function ($query) {
+              $query->addSelect(['is_like' => function($query){
+                $query->select(DB::raw('count(*) as cnt'))->from('board_likes')
+                  ->whereColumn('boards_id','boards.id')
+                  ->where('users_id',$this->user_id)
+                  ->limit(1);
+              }]);
+              return $query;
+            })
+            ->when($type == "follow",function($query){//팔로우 리스
+              $query->leftJoin('follows','follows.artist_id','=','boards.artists_id' )
+              ->where('follows.user_id',$this->user_id)
+              ->get();
+            })
+            ->when($type == "select",function($query){// 아티스트 별 리스트
+              $query->where('artists_id',$this->artist_id)
+              ->get();
+            })
             ->where('type', '!=', 'fanfeed')
             ->where('state', 1)
             ->orderby('recorded_at', 'desc')
@@ -163,6 +218,60 @@ class LobbyClassv6
             $result->recorded_at = $board['recorded_at'];
             $result->video_duration = $this->duration_convert($board['video_duration']);
             $result->like = $board['is_like'];
+            $result->item_count = $board['item_count'];
+            $result->comment_count = $board['comment_count'];
+            $parsing_results[] = $result;
+        }
+        return $parsing_results;
+    }
+
+    //게시물 파싱
+    public function list_parsing($boards, $user = null)
+    {
+        $parsing_results = [];
+        foreach ($boards as $board) {
+
+            if (is_object($board)) {
+                $tempBoard = $board;
+                $board = $board->toArray();
+                $board['comment_count'] = $tempBoard->comments->count();
+            }
+
+            $timestamp_string = $this->DateToRelative($board['type'], $board['created_at']);
+
+            $result = new \stdClass();
+            $result->id = $board['id'];
+            $result->artist_id = $board['artists_id'];
+            $result->app = $board['app'];
+            $result->type = $board['type'];
+            $result->post = $board['post'];
+            $result->post_type = $board['post_type'];
+            $result->thumbnail_url = $board['thumbnail_url'];
+            $result->thumbnail_w = $board['thumbnail_w'];
+            $result->thumbnail_h = $board['thumbnail_h'];
+            $result->title = $board['title'];
+            $result->contents = trim($board['contents']);
+            $result->sns_account = $board['sns_account'];
+            $result->ori_tag = $board['ori_tag'];
+            $result->custom_tag = $board['custom_tag'];
+            $result->data = $board['data'];
+            $result->ori_thumbnail = $board['ori_thumbnail'];
+            $result->ori_data = $board['ori_data'];
+            $result->gender = $board['gender'];
+            $result->state = $board['state'];
+            $result->text_check = $board['text_check'];
+            $result->search_type = $board['search_type'];
+            $result->search = $board['search'];
+            $result->app_review = $board['app_review'];
+            $result->deleted_at = $board['deleted_at'];
+            $result->created_at = $timestamp_string;
+            $result->updated_at = $board['updated_at'];
+            $result->face_check = $board['face_check'];
+            $result->recorded_at = $board['recorded_at'];
+            $result->video_duration = $this->duration_convert($board['video_duration']);
+            if(isset($board['is_like'])){
+                $result->like = $board['is_like'];
+            }
             $result->item_count = $board['item_count'];
             $result->comment_count = $board['comment_count'];
             $parsing_results[] = $result;
@@ -599,18 +708,28 @@ class LobbyClassv6
     }
 
     //아티스트 리스
-    public function makeArtistList($app, $next_token = 1, $type)
+    public function makeArtistList($app, $next_token = 1, $type, $user_id)
     {
         // Redis Connection
         if ($next_token == 0) {
             $next_token = 1;
         }
         $this->type = $type;
+        $this->user_id = $user_id;
         $page_count = 20;
 
-        $board_select_query = Artist::where('app', $app)
+        $board_select_query = Artist::when($this->user_id != '', function ($query) {
+              $query->addSelect(['is_follow' => function($query){
+                $query->select(DB::raw('count(*) as cnt'))->from('follows')
+                  ->whereColumn('artist_id','artists.id')
+                  ->where('user_id',$this->user_id)
+                  ->limit(1);
+              }]);
+              return $query;
+            })
+            ->where('app', $app)
             ->when(($type != 'all'), function ($query) {
-                $type_arr = explode("," ,$this->type);  
+                $type_arr = explode("," ,$this->type);
                 return $query->whereIn('team_type', $type_arr);
             })
             ->orderby('created_at', 'desc')

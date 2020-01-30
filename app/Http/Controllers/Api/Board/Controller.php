@@ -14,6 +14,7 @@ use App\UserItem;
 use App\UserScoreLog;
 use Carbon\Carbon;
 use App\Comment;
+use App\Follow;
 use App\Lib\Response;
 use App\Lib\Util;
 use Illuminate\Validation\ValidationException;
@@ -208,10 +209,48 @@ class Controller extends baseController
         return $this->response->set_response(0, $response);
     }
 
+    //컨텐츠 리스트
+    public function get_list(Request $request, $type)
+    {
+        $user_id = "";
+        $user = Auth('api')->user();
+
+        if($type != "all"){
+          if (!$user) {
+              return $this->response->set_response(-2001, null);
+          }else{
+            $user_id = $user->id;
+          }
+        }
+
+        $params = [
+            'app' => $request->input('app', 'fantaholic'),
+            'next_token' => $request->input('next_page', 0),
+            'type' => $type,
+            'artist_id'=> $request->input('artist_id', 0)
+        ];
+
+        $lobbyClass = new LobbyClassv6();
+        $response = $lobbyClass->makeListPage($params['app'], $params['next_token'], $params['type'], $user_id ,$params['artist_id']);
+
+        if (!isset($response['body']) || (isset($response['body']) && count($response['body']) == 0)) {
+            return $this->response->set_response(-2001, null);
+        }
+        $response['shared_url'] = config('celeb')[$params['app']]['shared_url'];
+        $response['count'] = count($response['body']);
+        $response['body'] = $lobbyClass->list_parsing($response['body'], $user);
+        return $this->response->set_response(0, $response);
+    }
+
     //아티스트 리스트
     public function get_list_artist(Request $request)
     {
         $user = Auth('api')->user();
+        $user_id = "";
+
+        if($user){
+          $user_id = $user->id;
+        }
 
         $params = [
             'type' => $request->input('type'),
@@ -222,10 +261,11 @@ class Controller extends baseController
 //        $response = $this->redis->get("{$params['app']}:Lobby:V2:page:{$params['next_token']}");
 
         $lobbyClass = new LobbyClassv6();
-        $response = $lobbyClass->makeArtistList($params['app'], $params['next_token'], $params['type']);
+        $response = $lobbyClass->makeArtistList($params['app'], $params['next_token'], $params['type'], $user_id);
         if (!isset($response['body']) || (isset($response['body']) && count($response['body']) == 0)) {
             return $this->response->set_response(-2001, null);
         }
+
         $response['count'] = count($response['body']);
         return $this->response->set_response(0, $response);
     }
