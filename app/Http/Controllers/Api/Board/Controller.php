@@ -979,7 +979,7 @@ class Controller extends baseController
     public function refresh_v2(Request $request, $board_id)
     {
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => "fantaholic",
         ];
 
         $user = Auth('api')->user();
