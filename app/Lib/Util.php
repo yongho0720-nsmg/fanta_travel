@@ -398,7 +398,7 @@ class Util
         $image->resizeToWidth(640);
         $image->save(public_path($path) . $filename);
 
-        Storage::disk('azure')->put("bts/{$path}/{$filename}",
+        Storage::disk('azure')->put("fantaholic/{$path}/{$filename}",
             file_get_contents(public_path($path) . $filename));
 
         unlink(public_path($path) . $filename);
@@ -538,5 +538,3 @@ class Util
         }
     }
 }
-
-
