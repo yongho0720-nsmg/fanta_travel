@@ -57,7 +57,7 @@ class Controller extends baseController
         }
 
         $user = $request->user();
-        $app = $request->input('app', 'pinxy');
+        $app = $request->input('app', 'fantaholic');
         $next = $request->input('next', 0);
         $page_count = 20;
 
@@ -98,7 +98,7 @@ class Controller extends baseController
 
     public function user_ban_boards(Request $request)
     {
-        $app = $request->input('app', 'pinxy');
+        $app = $request->input('app', 'fantaholic');
         $user_id = $request->user()->id;;
         //마이핀( 좋아요 한 게시물
         $user_response_to_boards = UserResponseToBoard::where('user_id', $user_id)
@@ -171,7 +171,7 @@ class Controller extends baseController
             ], 200);
         }
 
-        $app = $request->input('app', env('APP_NAME'));
+        $app = $request->input('app','fantaholic');
 
         $params = [
             'app' => $app,
@@ -268,7 +268,7 @@ class Controller extends baseController
                 ]
             ], 200);
         }
-        $app = $request->input('app', 'pinxy');
+        $app = $request->input('app', 'fantaholic');
 
         $duple_check = User::where('email', $request->input('email'))->where('app', $app)->count();
         if ($duple_check > 0) {
@@ -301,7 +301,7 @@ class Controller extends baseController
             ], 200);
         }
 
-        $app = $request->input('app', 'pinxy');
+        $app = $request->input('app', 'fantaholic');
 
         $duple_check = User::where('nickname', $request->input('nickname'))
             ->where('app', $app)->count();
@@ -363,7 +363,7 @@ class Controller extends baseController
             ], 200);
         }
 
-        $app = $request->input('app', 'pinxy');
+        $app = $request->input('app', 'fantaholic');
 
         $duple_check = User::where('nickname', $request->input('nickname'))
             ->where('app', $app)->count();
@@ -591,7 +591,7 @@ class Controller extends baseController
         }
 
         $this->redis = app('redis');
-        $app = $request->input('app', 'pinxy');
+        $app = $request->input('app', 'fantaholic');
         //ad_id값으로 유저 검색
 
         //탈퇴한 유저인지 확인
@@ -808,7 +808,7 @@ class Controller extends baseController
         }
 
         $this->redis = app('redis');
-        $app = $request->input('app', 'pinxy');
+        $app = $request->input('app', 'fantaholic');
         //ad_id값으로 유저 검색
 
         //탈퇴한 유저인지 확인
@@ -1004,7 +1004,7 @@ class Controller extends baseController
         ]);
 
         $params = [
-            'app' => $request->input('app', 'pinxy'),
+            'app' => $request->input('app', 'fantaholic'),
             'mobile' => $request->input('mobile')
         ];
 
@@ -1062,7 +1062,7 @@ class Controller extends baseController
         ]);
 
         $params = [
-            'app' => $request->input('app', 'pinxy'),
+            'app' => $request->input('app', 'fantaholic'),
             'mobile' => $request->input('mobile'),
         ];
 
@@ -1132,7 +1132,7 @@ class Controller extends baseController
         ]);
 
         $params = [
-            'app' => $request->input('app', 'pinxy'),
+            'app' => $request->input('app', 'fantaholic'),
             'mobile' => $request->input('mobile'),
             'number' => $request->input('number'),
         ];
@@ -1164,7 +1164,7 @@ class Controller extends baseController
             'app' => 'string'
         ]);
 
-        $app = $request->input('app', 'pinxy');
+        $app = $request->input('app', 'fantaholic');
 
         $users = User::where('mobile', $request->input('mobile'))
             ->where('app', $app)
@@ -1191,7 +1191,7 @@ class Controller extends baseController
             'password' => 'required|string'
         ]);
 
-        $app = $request->input('app', 'pinxy');
+        $app = $request->input('app', 'fantaholic');
 
         if (Hash::check($request->input('password'),
             User::where('email', $request->input('email'))->where('app', $app)->get()->first()->password)) {
@@ -1236,7 +1236,7 @@ class Controller extends baseController
             ], 200);
         }
 
-        $app = $request->input('app', 'pinxy'); //엡이름
+        $app = $request->input('app', 'fantaholic'); //엡이름
         $user = $request->user(); //유저정보
         $now_year = Carbon::now()->year; //현재년도
         $now_month = Carbon::now()->month;  //현재월
@@ -1244,15 +1244,15 @@ class Controller extends baseController
 
         //현재월 랭킹 , 유저 id , 점수합
         $user_ranking = DB::select("select rank,user_id,total from
-                (select @vRank := @vRank +1 as rank,user_id,total 
+                (select @vRank := @vRank +1 as rank,user_id,total
                 from (
-                select user_id,sum(score) as total 
+                select user_id,sum(score) as total
                 from user_score_logs
                 JOIN users on users.id = user_score_logs.user_id
                 where year(user_score_logs.created_at) = {$now_year}
                 and month(user_score_logs.created_at) = {$now_month}
-                and user_score_logs.app = '{$app}'   
-                and users.deleted_at is null 
+                and user_score_logs.app = '{$app}'
+                and users.deleted_at is null
                 group by user_score_logs.user_id
                 order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                 )as cnt where user_id = {$user->id};
@@ -1267,15 +1267,15 @@ class Controller extends baseController
                 $point_gap = 0;                   //다음랭킹까지 남은 포인트 [1위는 0 고정]
             } else {
                 $next_ranking = DB::select("select rank,user_id,total from
-                (select @vRank := @vRank +1 as rank,user_id,total 
+                (select @vRank := @vRank +1 as rank,user_id,total
                 from (
-                select user_id,sum(score) as total 
+                select user_id,sum(score) as total
                 from user_score_logs
-                JOIN users on users.id = user_score_logs.user_id   
+                JOIN users on users.id = user_score_logs.user_id
                 where year(user_score_logs.created_at) = {$now_year}
                 and month(user_score_logs.created_at) = {$now_month}
-                and user_score_logs.app = '{$app}'   
-                and users.deleted_at is null 
+                and user_score_logs.app = '{$app}'
+                and users.deleted_at is null
                 group by user_score_logs.user_id
                 order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                 )as cnt where total > {$user_ranking->total} order by total asc limit 1;
@@ -1330,15 +1330,15 @@ class Controller extends baseController
 
         // 2 현재 월 랭킹
         $user_ranking = DB::select("select rank,user_id,total from
-                (select @vRank := @vRank +1 as rank,user_id,total 
+                (select @vRank := @vRank +1 as rank,user_id,total
                 from (
-                select user_id,sum(score) as total 
+                select user_id,sum(score) as total
                 from user_score_logs
                 JOIN users on users.id = user_score_logs.user_id
                 where year(user_score_logs.created_at) = {$now_year}
                 and month(user_score_logs.created_at) = {$now_month}
-                and user_score_logs.app = '{$app}'   
-                and users.deleted_at is null 
+                and user_score_logs.app = '{$app}'
+                and users.deleted_at is null
                 group by user_score_logs.user_id
                 order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                 )as cnt where user_id = {$user->id};
@@ -1352,15 +1352,15 @@ class Controller extends baseController
                 $point_gap = 0;                   //다음랭킹까지 남은 포인트 [1위는 0 고정]
             } else {
                 $next_ranking = DB::select("select rank,user_id,total from
-                (select @vRank := @vRank +1 as rank,user_id,total 
+                (select @vRank := @vRank +1 as rank,user_id,total
                 from (
-                select user_id,sum(score) as total 
+                select user_id,sum(score) as total
                 from user_score_logs
-                JOIN users on users.id = user_score_logs.user_id   
+                JOIN users on users.id = user_score_logs.user_id
                 where year(user_score_logs.created_at) = {$now_year}
                 and month(user_score_logs.created_at) = {$now_month}
-                and user_score_logs.app = '{$app}'   
-                and users.deleted_at is null 
+                and user_score_logs.app = '{$app}'
+                and users.deleted_at is null
                 group by user_score_logs.user_id
                 order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                 )as cnt where total > {$user_ranking[0]->total} order by total asc limit 1;
@@ -1400,15 +1400,15 @@ class Controller extends baseController
                 } else {
                     $ranking_history->date = $monday->format('j');
                     $ranking = DB::select("select rank from
-                        (select @vRank := @vRank +1 as rank,user_id,total 
+                        (select @vRank := @vRank +1 as rank,user_id,total
                         from (
-                        select user_id,sum(score) as total 
+                        select user_id,sum(score) as total
                         from user_score_logs
                         JOIN users on users.id = user_score_logs.user_id
                         where user_score_logs.created_at > '{$start}'
                         and user_score_logs.created_at < '{$monday}'
-                        and user_score_logs.app = '{$app}'   
-                        and users.deleted_at is null 
+                        and user_score_logs.app = '{$app}'
+                        and users.deleted_at is null
                         group by user_score_logs.user_id
                         order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                         )as cnt where user_id = {$user->id};
@@ -1461,15 +1461,15 @@ class Controller extends baseController
 
         // 해당 월 랭킹 없으면 -2001
         $check = DB::select("select rank,user_id,total from
-                        (select @vRank := @vRank +1 as rank,user_id,total 
+                        (select @vRank := @vRank +1 as rank,user_id,total
                         from (
-                        select user_id,sum(score) as total 
+                        select user_id,sum(score) as total
                         from user_score_logs
                         JOIN users on users.id = user_score_logs.user_id
                         where year(user_score_logs.created_at) = {$year}
                         and month(user_score_logs.created_at) = {$month}
-                        and user_score_logs.app = '{$app}'   
-                        and users.deleted_at is null 
+                        and user_score_logs.app = '{$app}'
+                        and users.deleted_at is null
                         group by user_score_logs.user_id
                         order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                         )as cnt where user_id = {$user->id};
@@ -1490,15 +1490,15 @@ class Controller extends baseController
             $now_month = Carbon::now()->month;
             //이번달 랭킹 검색
             $user_ranking = DB::select("select rank,user_id,total from
-                        (select @vRank := @vRank +1 as rank,user_id,total 
+                        (select @vRank := @vRank +1 as rank,user_id,total
                         from (
-                        select user_id,sum(score) as total 
+                        select user_id,sum(score) as total
                         from user_score_logs
                         JOIN users on users.id = user_score_logs.user_id
                         where year(user_score_logs.created_at) = {$now_year}
                         and month(user_score_logs.created_at) = {$now_month}
-                        and user_score_logs.app = '{$app}'   
-                        and users.deleted_at is null 
+                        and user_score_logs.app = '{$app}'
+                        and users.deleted_at is null
                         group by user_score_logs.user_id
                         order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                         )as cnt where user_id = {$user->id};
@@ -1529,15 +1529,15 @@ class Controller extends baseController
                     } else {
                         $ranking_history->date = $monday->format('j');
                         $ranking = DB::select("select rank from
-                        (select @vRank := @vRank +1 as rank,user_id,total 
+                        (select @vRank := @vRank +1 as rank,user_id,total
                         from (
-                        select user_id,sum(score) as total 
+                        select user_id,sum(score) as total
                         from user_score_logs
                         JOIN users on users.id = user_score_logs.user_id
                         where user_score_logs.created_at > '{$start}'
                         and user_score_logs.created_at < '{$monday}'
-                        and user_score_logs.app = '{$app}'   
-                        and users.deleted_at is null 
+                        and user_score_logs.app = '{$app}'
+                        and users.deleted_at is null
                         group by user_score_logs.user_id
                         order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                         )as cnt where user_id = {$user->id};
@@ -1557,15 +1557,15 @@ class Controller extends baseController
                 $ranking_history = new \stdClass();
                 $ranking_history->date = $monday->format('j');
                 $ranking = DB::select("select rank from
-                    (select @vRank := @vRank +1 as rank,user_id,total 
+                    (select @vRank := @vRank +1 as rank,user_id,total
                     from (
-                    select user_id,sum(score) as total 
+                    select user_id,sum(score) as total
                     from user_score_logs
                     JOIN users on users.id = user_score_logs.user_id
                     where user_score_logs.created_at > '{$start}'
                     and user_score_logs.created_at < '{$monday}'
-                    and user_score_logs.app = '{$app}'   
-                    and users.deleted_at is null 
+                    and user_score_logs.app = '{$app}'
+                    and users.deleted_at is null
                     group by user_score_logs.user_id
                     order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                     )as cnt where user_id = {$user->id};
@@ -1577,15 +1577,15 @@ class Controller extends baseController
 
         // 2 이 달의 랭킹
         $ranking = DB::select("select rank from
-                (select @vRank := @vRank +1 as rank,user_id,total 
+                (select @vRank := @vRank +1 as rank,user_id,total
                 from (
-                select user_id,sum(score) as total 
+                select user_id,sum(score) as total
                 from user_score_logs
                 JOIN users on users.id = user_score_logs.user_id
                 where year(user_score_logs.created_at) = {$year}
                 and month(user_score_logs.created_at) = {$month}
-                and user_score_logs.app = '{$app}'   
-                and users.deleted_at is null 
+                and user_score_logs.app = '{$app}'
+                and users.deleted_at is null
                 group by user_score_logs.user_id
                 order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                 )as cnt where user_id = {$user->id};
@@ -1827,7 +1827,7 @@ class Controller extends baseController
             ], 200);
         }
         $params = [
-            'app' => $request->input('app', 'pinxy'),
+            'app' => $request->input('app', 'fantaholic'),
             'type' => $request->input('type', 'W'),
             'next' => $request->input('next', 0)
         ];
@@ -1838,7 +1838,7 @@ class Controller extends baseController
             return $this->response->set_response(-2001, null);
         }
 
-        $app = $request->input('app', 'pinxy'); //앱이름
+        $app = $request->input('app', 'fantaholic'); //앱이름
         $user = Auth('api')->user(); // 유저정보 비로그인시 null
         $result = [];
         $my_ranking = new \stdClass();
@@ -1887,8 +1887,8 @@ class Controller extends baseController
                     JOIN users on users.id = user_score_logs.user_id
                     where user_score_logs.created_at > '{$start_period}'
                     and user_score_logs.created_at < '{$end_period}'
-                    and user_score_logs.app = '{$app}'   
-                    and users.deleted_at is null 
+                    and user_score_logs.app = '{$app}'
+                    and users.deleted_at is null
                     group by user_score_logs.user_id
                     order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                     )as cnt where user_id = {$user->id}
@@ -1919,8 +1919,8 @@ class Controller extends baseController
                     JOIN users on users.id = user_score_logs.user_id
                     where user_score_logs.created_at > '{$start_period}'
                     and user_score_logs.created_at < '{$end_period}'
-                    and user_score_logs.app = '{$app}'   
-                    and users.deleted_at is null 
+                    and user_score_logs.app = '{$app}'
+                    and users.deleted_at is null
                     group by user_score_logs.user_id
                     order by sum(user_score_logs.score) desc,user_score_logs.updated_at asc) as p, (select @vRank :=0) as r
                     ) as cnt where rank >= {$start} and rank <= {$end}");
