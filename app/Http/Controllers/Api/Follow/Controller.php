@@ -22,7 +22,7 @@ class Controller extends baseController
     {
         $this->response = new Response();
     }
-    
+
     //팔로우
     public function index(Request $request){
 
@@ -34,7 +34,7 @@ class Controller extends baseController
 
         $artist_id_arr = explode(",",$request->input('artist_id'));
 
-        Follow::where('user_id', '=', $user->id)->delete();// 팔로우 초기화
+        //Follow::where('user_id', '=', $user->id)->delete();// 팔로우 초기화
 
         foreach($artist_id_arr as $artist_id){
           $params = [
