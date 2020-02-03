@@ -724,7 +724,8 @@ class LobbyClassv6
         $this->user_id = $user_id;
         $page_count = 20;
 
-        $board_select_query = Artist::when($this->user_id != '', function ($query) {
+        $board_select_query = Artist::select('*',DB::raw("'F' as is_added"))
+            ->when($this->user_id != '', function ($query) {
               $query->addSelect(['is_follow' => function($query){
                 $query->select(DB::raw('count(*) as cnt'))->from('follows')
                   ->whereColumn('artist_id','artists.id')
@@ -759,5 +760,25 @@ class LobbyClassv6
 
         return $response;
     }
+
+    //아티스트 팔로우 리스트
+    public function makeArtistListFollow($user_id)
+    {
+        $this->user_id = $user_id;
+
+        $board_select_query = Artist::Join('follows','follows.artist_id','=','artists.id')
+            ->where('follows.user_id','=',$user_id)
+            ->orderby('artists.created_at', 'desc')
+            ->get();
+
+        $this->config = app('config')['celeb']['fantaholic'];
+        $response['cdn_url'] = $this->config['cdn'];
+
+        $response['body'] = $board_select_query;
+
+        return $response;
+    }
+
+
 
 }
