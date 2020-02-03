@@ -272,7 +272,7 @@ class Controller extends baseController
           $response['body'][$response['count']]['created_at'] ='';
           $response['body'][$response['count']]['deleted_at'] ='';
           $response['body'][$response['count']]['updated_at'] ='';
-          $response['body'][$response['count']]['is_added'] ='T';
+          $response['body'][$response['count']]['is_added'] =1;
         }
 
         return $this->response->set_response(0, $response);
