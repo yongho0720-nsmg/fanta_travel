@@ -738,6 +738,7 @@ class LobbyClassv6
                 $type_arr = explode("," ,$this->type);
                 return $query->whereIn('team_type', $type_arr);
             })
+            ->addSelect(DB::raw("0 as is_added"))
             ->orderby('created_at', 'desc')
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
 
