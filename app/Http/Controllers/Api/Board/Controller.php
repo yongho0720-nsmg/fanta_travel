@@ -253,12 +253,10 @@ class Controller extends baseController
         }
 
         $params = [
-            'type' => $request->input('type'),
+            'type' => urldecode($request->input('type')),
             'app' => $request->input('app', 'fantaholic'),
             'next_token' => $request->input('next_page', 0),
         ];
-
-//        $response = $this->redis->get("{$params['app']}:Lobby:V2:page:{$params['next_token']}");
 
         $lobbyClass = new LobbyClassv6();
         $response = $lobbyClass->makeArtistList($params['app'], $params['next_token'], $params['type'], $user_id);
