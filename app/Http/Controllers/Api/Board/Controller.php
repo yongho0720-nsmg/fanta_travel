@@ -265,7 +265,7 @@ class Controller extends baseController
 
         $response['count'] = count($response['body']);
         if($response['next_page'] == '-1'){
-          $response['body'][$response['count']]['id'] ='';
+          $response['body'][$response['count']]['id'] = -1;
           $response['body'][$response['count']]['name'] ='select';
           $response['body'][$response['count']]['team_type'] ='';
           $response['body'][$response['count']]['created_at'] ='';
