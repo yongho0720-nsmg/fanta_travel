@@ -724,7 +724,7 @@ class LobbyClassv6
         $this->user_id = $user_id;
         $page_count = 20;
 
-        $board_select_query = Artist::select('*',DB::raw("NULL as is_added"))
+        $board_select_query = Artist::select('*',DB::raw("0 as is_added"))
             ->when($this->user_id != '', function ($query) {
               $query->addSelect(['is_follow' => function($query){
                 $query->select(DB::raw('count(*) as cnt'))->from('follows')
