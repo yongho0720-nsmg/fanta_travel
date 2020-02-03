@@ -733,7 +733,6 @@ class LobbyClassv6
               }]);
               return $query;
             })
-            ->addSelect(DB::raw("0 as is_added"))
             ->where('app', $app)
             ->when(($type != 'all'), function ($query) {
                 $type_arr = explode("," ,$this->type);
