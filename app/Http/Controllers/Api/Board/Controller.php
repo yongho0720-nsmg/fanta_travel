@@ -265,8 +265,35 @@ class Controller extends baseController
         }
 
         $response['count'] = count($response['body']);
+        if($response['next_page'] == '-1'){
+          $response['body'][$response['count']]['id'] ='';
+          $response['body'][$response['count']]['name'] ='select';
+          $response['body'][$response['count']]['team_type'] ='';
+          $response['body'][$response['count']]['created_at'] ='';
+          $response['body'][$response['count']]['deleted_at'] ='';
+          $response['body'][$response['count']]['updated_at'] ='';
+          $response['body'][$response['count']]['is_added'] ='T';
+        }
+
         return $this->response->set_response(0, $response);
     }
+
+    //아티스트 리스트
+    public function get_list_follow_artist(Request $request)
+    {
+        $user = Auth('api')->user();
+
+        $lobbyClass = new LobbyClassv6();
+        $response = $lobbyClass->makeArtistListFollow($user->id);
+        if (!isset($response['body']) || (isset($response['body']) && count($response['body']) == 0)) {
+            return $this->response->set_response(-2001, null);
+        }
+
+        $response['count'] = count($response['body']);
+        return $this->response->set_response(0, $response);
+    }
+
+
 
     //단일 리스트 v6
     public function single_list_v6(Request $request, $type)
