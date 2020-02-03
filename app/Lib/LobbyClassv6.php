@@ -724,8 +724,7 @@ class LobbyClassv6
         $this->user_id = $user_id;
         $page_count = 20;
 
-        $board_select_query = Artist::select('*',DB::raw("0 as is_added"))
-            ->when($this->user_id != '', function ($query) {
+        $board_select_query = Artist::when($this->user_id != '', function ($query) {
               $query->addSelect(['is_follow' => function($query){
                 $query->select(DB::raw('count(*) as cnt'))->from('follows')
                   ->whereColumn('artist_id','artists.id')
@@ -734,6 +733,7 @@ class LobbyClassv6
               }]);
               return $query;
             })
+            ->addSelect(DB::raw("0 as is_added"))
             ->where('app', $app)
             ->when(($type != 'all'), function ($query) {
                 $type_arr = explode("," ,$this->type);

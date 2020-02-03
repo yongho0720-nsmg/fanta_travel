@@ -251,7 +251,6 @@ class Controller extends baseController
         if($user){
           $user_id = $user->id;
         }
-
         $params = [
             'type' => urldecode($request->input('type')),
             'app' => $request->input('app', 'fantaholic'),
