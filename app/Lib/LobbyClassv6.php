@@ -60,7 +60,7 @@ class LobbyClassv6
         return $response;
     }
 
-    public function makeListPage($app, $next_token = 1, $type, $user_id, $artist_id)
+    public function makeListPage($app, $next_token = 1, $type, $user_id, $artist_id, $sns_type)
     {
         // Redis Connection
         if ($next_token == 0) {
@@ -71,6 +71,7 @@ class LobbyClassv6
 
         $this->user_id = $user_id;
         $this->artist_id = $artist_id;
+        $this->sns_type = $sns_type;
 
         $board_select_query = Board::when($this->user_id != '', function ($query) {
               $query->addSelect(['is_like' => function($query){
@@ -88,6 +89,10 @@ class LobbyClassv6
             })
             ->when($type == "select",function($query){// 아티스트 별 리스트
               $query->where('artists_id',$this->artist_id)
+              ->get();
+            })
+            ->when($sns_type != "all",function($query){// sns별 리스트
+              $query->where('type',$this->sns_type)
               ->get();
             })
             ->where('type', '!=', 'fanfeed')

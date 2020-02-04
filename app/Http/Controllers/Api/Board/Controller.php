@@ -227,11 +227,12 @@ class Controller extends baseController
             'app' => $request->input('app', 'fantaholic'),
             'next_token' => $request->input('next_page', 0),
             'type' => $type,
-            'artist_id'=> $request->input('artist_id', 0)
+            'artist_id'=> $request->input('artist_id', 0),
+            'sns_type'=> $request->input('sns_type', 'all')
         ];
 
         $lobbyClass = new LobbyClassv6();
-        $response = $lobbyClass->makeListPage($params['app'], $params['next_token'], $params['type'], $user_id ,$params['artist_id']);
+        $response = $lobbyClass->makeListPage($params['app'], $params['next_token'], $params['type'], $user_id ,$params['artist_id'],$params['sns_type']);
 
         if (!isset($response['body']) || (isset($response['body']) && count($response['body']) == 0)) {
             return $this->response->set_response(-2001, null);
