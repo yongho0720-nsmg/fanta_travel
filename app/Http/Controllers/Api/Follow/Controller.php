@@ -31,10 +31,17 @@ class Controller extends baseController
         if(!$request->input('artist_id')){
             return $this->response->set_response(-2001,null);
         }
+        if(!$request->input('artist_type')){
+            return $this->response->set_response(-2001,null);
+        }
 
         $artist_id_arr = explode(",",$request->input('artist_id'));
+        $artist_type_arr = explode(",",$request->input('artist_type'));
 
-        //Follow::where('user_id', '=', $user->id)->delete();// 팔로우 초기화
+        Follow::join("artists","artists.id","=","follows.artist_id")
+        ->where('follows.user_id', '=', $user->id)
+        ->whereIn('artists.team_type', $artist_type_arr )
+        ->delete();// 팔로우 초기화
 
         foreach($artist_id_arr as $artist_id){
           $params = [
