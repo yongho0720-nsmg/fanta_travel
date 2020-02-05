@@ -744,11 +744,6 @@ class LobbyClassv6
                 $type_arr = explode("," ,$this->type);
                 return $query->whereIn('team_type', $type_arr);
             })
-            ->addSelect(['follow_cnt' => function($query){
-              $query->select(DB::raw('count(*) as cnt'))->from('follows')
-                ->whereColumn('artist_id','artists.id')
-                ->limit(1);
-            }])
             ->orderby('created_at', 'desc')
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
 
@@ -757,8 +752,13 @@ class LobbyClassv6
         } else {
             $next_page = $next_token + 1;
         }
+        $follow_cnt = Follow::Select(DB::raw("count(*) as cnt"))
+        ->where("user_id",$this->user_id)
+        ->get();
+
 
         $this->config = app('config')['celeb'][$app];
+        $response['follow_cnt'] = $follow_cnt[0]->cnt;
         $response['cdn_url'] = $this->config['cdn'];
         $response['next_page'] = $next_page;
         $response['body'] = $board_select_query->items();
