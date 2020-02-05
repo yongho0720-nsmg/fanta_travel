@@ -744,6 +744,11 @@ class LobbyClassv6
                 $type_arr = explode("," ,$this->type);
                 return $query->whereIn('team_type', $type_arr);
             })
+            ->addSelect(['follow_cnt' => function($query){
+              $query->select(DB::raw('count(*) as cnt'))->from('follows')
+                ->whereColumn('artist_id','artists.id')
+                ->limit(1);
+            }])
             ->orderby('created_at', 'desc')
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
 
