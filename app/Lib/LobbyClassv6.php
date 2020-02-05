@@ -752,7 +752,6 @@ class LobbyClassv6
         } else {
             $next_page = $next_token + 1;
         }
-        dd($this->user_id);
         $follow_cnt = Follow::Select(DB::raw("count(*) as cnt"))
         ->where("user_id",$this->user_id)
         ->get();
