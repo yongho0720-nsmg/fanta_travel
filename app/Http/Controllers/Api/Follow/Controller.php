@@ -111,8 +111,9 @@ class Controller extends baseController
         ->whereIn('artists.team_type', $artist_type_arr )
         ->select('artists.id')
         ->get();// 팔로우 초기화
-
-        return $this->response->set_response(0, $results);
+        $response['body'] = $results;
+        $response['count'] = count($results);
+        return $this->response->set_response(0, $response);
     }
 
 
