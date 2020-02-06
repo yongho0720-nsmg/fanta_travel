@@ -10,6 +10,7 @@ use App\Lib\Response;
 use App\Lib\Util;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 use App\Lib\Log;
 use App\Http\Controllers\Controller as baseController;
 
@@ -89,6 +90,31 @@ class Controller extends baseController
           return $this->response->set_response(-2001,null);
         }
     }
+
+    //팔로우 아티스트 리스트
+    public function get_list_follow_artist(Request $request)
+    {
+        $user = Auth('api')->user();
+
+        $team_type = $request->input('type');
+
+        $artist_type = $request->input('artist_type');
+
+        if($artist_type == "all" ){
+          $artist_type = "group-W,group-M,solo,group-MIX";
+        }
+
+        $artist_type_arr = explode(",",$artist_type);
+
+        $results = Follow::join("artists","artists.id","=","follows.artist_id")
+        ->where('follows.user_id', '=', $user->id)
+        ->whereIn('artists.team_type', $artist_type_arr )
+        ->select('artists.id')
+        ->get();// 팔로우 초기화
+
+        return $this->response->set_response(0, $results);
+    }
+
 
 
 }

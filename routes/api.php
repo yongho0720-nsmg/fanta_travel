@@ -191,6 +191,7 @@ Route::group(['prefix' => 'musics'], function () {
 Route::group(['prefix' => 'follows'], function () {
   Route::post('/','Api\Follow\Controller@index')->middleware('auth:api'); // 팔로우
   Route::post('/delete','Api\Follow\Controller@unfollow')->middleware('auth:api'); // 언팔로우
+  Route::get('/get_list/','Api\Follow\Controller@get_list_follow_artist');//팔로우 아티스트 리스트
 });
 
 Route::group(['prefix' => 'albums'], function () {
