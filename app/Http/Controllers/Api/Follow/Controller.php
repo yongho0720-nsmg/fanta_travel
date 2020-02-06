@@ -36,9 +36,6 @@ class Controller extends baseController
         }
 
         $artist_id_arr = explode(",",$request->input('artist_id'));
-        if($request->input('artist_type') == "all" ){
-          $request->input('artist_type') = "group-W,group-M,solo,group-MIX";
-        }
         $artist_type_arr = explode(",",$request->input('artist_type'));
 
         Follow::join("artists","artists.id","=","follows.artist_id")
