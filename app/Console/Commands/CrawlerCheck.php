@@ -44,9 +44,9 @@ class CrawlerCheck extends Command
 
       $send_str = "";
       if(!$logs){
-        $send_str = "[".Carbon::now()."] [Error!!] 크롤링 수집이 정상적으로 수행되지 않았습니다.";
+        $send_str = "[fanta_holic] [Error!!] 크롤링 수집이 정상적으로 수행되지 않았습니다.";
       }else{
-        $send_str = "[".Carbon::now()."] 컨텐츠 ".$logs['crawler_cnt']."개가 크롤링 되었습니다.";
+        $send_str = "[fanta_holic] 컨텐츠 ".$logs['crawler_cnt']."개가 크롤링 되었습니다.";
       }
 
   		$query_array = array(
