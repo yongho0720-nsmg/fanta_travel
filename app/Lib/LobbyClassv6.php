@@ -95,7 +95,6 @@ class LobbyClassv6
               $query->where('type',$this->sns_type)
               ->get();
             })
-            ->where('type', '!=', 'fanfeed')
             ->where('state', 1)
             ->where('post','NOT LIKE','%.%')
             ->where('data','!=','[]')

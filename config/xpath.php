@@ -32,7 +32,7 @@ return[
           'xpath' => ''
         ],
         'version'=> '',
-        'url' => 'https://twitter.com/BTS_twt/status/'
+        'url' => 'https://twitter.com/'
 
     ]
 
