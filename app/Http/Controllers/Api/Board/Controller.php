@@ -1061,7 +1061,13 @@ class Controller extends baseController
           $result['board']->xpath_ver = config('xpath')[$result['board']->type]['version'];
 
         }
-        $result['board']->url = config('xpath')[$result['board']->type]['url'].$result['board']->sns_account."/status/".$result['board']->post;
+        
+        if($result['board']->type == "twitter"){
+          $result['board']->url = config('xpath')[$result['board']->type]['url'].$result['board']->sns_account."/status/".$result['board']->post;
+        }else{
+          $result['board']->url = config('xpath')[$result['board']->type]['url'].$result['board']->post;
+        }
+
         return $this->response->set_response(0, $result);
 
     }
