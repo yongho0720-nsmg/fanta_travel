@@ -43,6 +43,8 @@ class CrawlerAllCommand extends Command
             $cnt += $channel::$successCnt;
             $crawler->finaled_at = date('Y-m-d H:i:s');
             $crawler->save();
+          
+            sleep(10);
         }
 
         //게시물 알림 => 새 게시물이 있는 경우 푸쉬
