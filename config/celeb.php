@@ -10,11 +10,11 @@ return [
         //
         'curl_url' => 'http://devtrs.ce1eb.com',
         //구글 마켓 공유
-        'shared_url'    => 'https://play.google.com/store/apps/details?id=com.celeb.tube.krieshachu',
+        'shared_url'    => 'https://play.google.com/store/apps/details?id=com.curation.fantaholic',
 
         'app_name' => 'fantaholic',        //앱 이름
 
-        'celeb_name' => 'fantaholic',         //셀럽 이름 => 크리샤 츄 회원등록이후 수정
+        'celeb_name' => 'fantaholic',         //셀럽 이름
         'artist_name'    => '',
         'youtube_channel' => 'UCEOA5dqY5Qzz5MaKBImavYg',
         //WECHAT
