@@ -6,7 +6,7 @@ return [
         // CDN 주소
         'cdn' => 'https://fantaholic-cdn.azureedge.net/',
         // FCM 서버키
-        'fcm_server_key'   => 'AAAAV7knT5g:APA91bGK1YlgsXe1Qt5jGTFRHPh_2fufOo45rzdGN9CYm_CRIVz3meEKjkkUbVaNqJJ4_pFBRNizW_lp9ub5OuuoGFU8yAfanEXVOHjyRdZjZhbuPgxynhW6md_mnKiOWpN8FTe8WjH3',
+        'fcm_server_key'   => 'AAAATJjXjeU:APA91bH0Bz-U7xW5gTMzLBSf-ItB1feb0kCjtAiytLM3LAWu08_fe5Mc8de0w4ZiVYJS4FrJn9yGY-dl4yQ_MCaeHGwMNKfn1P6s69iQYm-f3X1Rts2aEW0Q5xUlIfhcahKdHof4LDPP',
         //
         'curl_url' => 'http://devtrs.ce1eb.com',
         //구글 마켓 공유
