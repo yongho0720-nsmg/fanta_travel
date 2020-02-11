@@ -47,6 +47,21 @@ class CrawlerCheck extends Command
         $send_str = "[fanta_holic] [Error!!] 크롤링 수집이 정상적으로 수행되지 않았습니다.";
       }else{
         $send_str = "[fanta_holic] 컨텐츠 ".$logs['crawler_cnt']."개가 크롤링 되었습니다.";
+
+          Push::create([
+              'app' => 'fantaholic',
+              'batch_type' => 'A',
+              'managed_type' => 'N',
+              'user_id' => 0,
+              'title' => '새로운 게시물이 등록되었습니다. ',
+              'content' => '새로운 게시물이 등록되었습니다.',
+              'tick' => 0,
+              'push_type' => 'T',
+              'action' => 'A',
+              'state' => 'R',
+              'start_date' => Carbon::now()->addDays(-1),
+          ]);
+
       }
 
   		$query_array = array(
