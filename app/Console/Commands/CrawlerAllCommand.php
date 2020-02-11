@@ -43,8 +43,8 @@ class CrawlerAllCommand extends Command
             $cnt += $channel::$successCnt;
             $crawler->finaled_at = date('Y-m-d H:i:s');
             $crawler->save();
-          
-            sleep(10);
+
+            //sleep(10);
         }
 
         //게시물 알림 => 새 게시물이 있는 경우 푸쉬
@@ -64,7 +64,7 @@ class CrawlerAllCommand extends Command
         //새로 등록된게 한개이상일떄 작업
         if ($cnt > 0) {
             Push::create([
-                'app' => 'bts',
+                'app' => 'fantaholic',
                 'batch_type' => 'A',
                 'managed_type' => 'N',
                 'user_id' => 0,

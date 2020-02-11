@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Board;
+use App\Follow;
+use DB;
 use App\Device;
 use Carbon\Carbon;
 use App\Push;
@@ -55,6 +57,11 @@ class PushWorkerCommand extends Command
             // 개별 발송
             elseif ($type == 'P') {
                 $this->person($app);
+            }
+
+            // 새 게시물
+            elseif ($type == 'N') {
+                $this->new_content($app);
             }
         }
     }
@@ -308,5 +315,151 @@ class PushWorkerCommand extends Command
                 'state' => 'Y',
                 'fail' => 1
             ]);
+    }
+
+    //todo 모델 함수처리
+    protected function new_content($app){
+
+        $push = Push::select([
+            'id',
+            'app',
+            'batch_type',
+            'managed_type',
+            'new_post_count',
+            'title',
+            'content',
+            'tick',
+            'push_type',
+            'img_url',
+            'action',
+            'url',
+            'board_type',
+            'board_id',
+            'streaming_url',
+            'state'
+        ])
+            //앱
+            ->where('app',$app)
+            //발송 타입
+            // 발송 타입
+            ->where('batch_type', 'N')
+            // 진행 상태
+            ->where('state', 'R')
+            // 시작일
+            ->where('start_date', '<', Carbon::now()->toDateTimeString())
+            ->orderBy('id')
+            ->limit(1)
+            ->first();
+
+
+
+        $artist_arr = Board::select('artists_id')
+                ->where('created_at', '>',  Carbon::now()->addHour(-3))
+                ->groupBy('artists_id')
+                ->havingRaw('count(*) > 0')
+                ->get()
+                ;
+
+        $user_id_arr = follow::select('user_id')
+                ->whereIn('artist_id', $artist_arr)
+                ->get()
+                ;
+
+        // 대기 중 목록이 있을 경우
+        if ( ! is_null($push)){
+            // 발송 개 수
+            $limit = 1000;
+            $query = Device::whereIn('user_id',$user_id_arr)
+                ->where(function($query) use($push){
+                  if($push->manage_type == 'S'){   // push 생성시 입력한 managed_type 기준으로 devices에 있는 push 받기/안받기 상태 종류 검사
+                      return $query->where('devices.streaming_push',1);
+                  }elseif ($push->managed_type == 'C'){
+                      return $query->where('devices.comment_push',1);
+                  }elseif ($push->managed_type == 'B'){
+                      return $query->where('devices.board_push',1);
+                  }else{
+                      return $query->where('devices.is_push',1);
+                  }
+                })
+                ->where('devices.fcm_token','!=',null)
+                ->groupBy('devices.fcm_token');
+            $count = $query->count();
+
+            $loop = (int) ceil($count / $limit);
+
+            $push->update([
+                'state'=>'S'
+            ]);
+
+            $success = $fail = 0;
+            for ($i = 0; $i < $loop; $i++) {
+                $offset = $i * $limit;
+                $items = $query->select(['user_id', 'store_type', 'fcm_token'])
+                    ->skip($offset)
+                    ->take($limit)
+                    ->get()
+                    ->keyBy('user_id')
+                    ->transform(function ($item) use ($push) {
+                        $data = [
+                            'registration_ids' => [$item->fcm_token],
+                            'data' => [
+                                'id' => $push->id,
+                                'user_id'   =>  $item->user_id,
+                                'batch_type' => $push->batch_type,
+                                'title' => $push->title,
+                                'message' => $push->content,
+                                'tick' => $push->tick,
+                                'push_type' => $push->push_type,
+                                'push_type_sub' => [
+                                    'img_url' => ($push->push_type == 'I') ? $push->img_url : ''
+                                ],
+                                'action' => $push->action,
+                                'action_sub' => [
+                                    'url' => ($push->action == 'M') ? $push->url : '',
+                                    'type' => ($push->action == 'B') ? $push->board_type : '',
+                                    'board_id' => ($push->action == 'B') ? $push->board_id : '',
+                                    'cdn_url'   => ($push->action =='B') ? app('config')['celeb'][$push->app]['cdn'] : '',
+                                    'campaign' =>  ($push->action== 'S')   ?   json_decode($push->streaming_url) : ''
+                                ]
+                            ]
+                        ];
+
+
+                        if ($item->store_type == 'ios') {
+                            $data = array_merge($data, [
+                                'notification' => [
+                                    'title' => $push->title,
+                                    'body' => $push->contents,
+                                    'sound' => 'default',
+                                    'badge' => 1
+                                ]
+                            ]);
+                        }
+                        return $data;
+                    });
+//                dump('보냄');
+//                dump($items);
+                // 푸시 발송
+
+
+                $results = collect($this->sender($app, $items));
+//                dump('결과');
+//                dump($results);
+                $success += $results->sum('success');
+                $fail += $results->sum('failure');
+
+                sleep(1);
+            }
+
+            // 상태 변경 (완료)
+            Push::where('id', $push->id)
+                ->update([
+                    'state' => 'Y',
+                    'success' => $success,
+                    'fail' => $fail
+                ]);
+        }else{
+            dump('보낼 push가 없음');
+        }
     }
 }
