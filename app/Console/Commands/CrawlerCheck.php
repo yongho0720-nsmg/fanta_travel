@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\CrawlerLog;
+use App\Push;
 use Carbon\Carbon;
 
 class CrawlerCheck extends Command
@@ -59,7 +60,7 @@ class CrawlerCheck extends Command
               'push_type' => 'T',
               'action' => 'A',
               'state' => 'R',
-              'start_date' => Carbon::now()->addDays(-1),
+              'start_date' => Carbon::now()->addHours(-1),
           ]);
 
       }
