@@ -27,13 +27,13 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //$schedule->command('crawler:all')->timezone('asia/seoul')->hourly();
-        $schedule->command('crawler:channel youtube')->timezone('asia/seoul')->hourlyAt(10);
-        $schedule->command('crawler:channel instagram')->timezone('asia/seoul')->hourly(20);
-        $schedule->command('crawler:channel twitter')->timezone('asia/seoul')->hourly(30);
-        $schedule->command('crawler:channel vlive')->timezone('asia/seoul')->hourly(40);
+        $schedule->command('crawler:channel youtube')->timezone('asia/seoul')->hourly();
+        $schedule->command('crawler:channel instagram')->timezone('asia/seoul')->hourlyAt(05);
+        $schedule->command('crawler:channel twitter')->timezone('asia/seoul')->hourlyAt(10);
+        $schedule->command('crawler:channel vlive')->timezone('asia/seoul')->hourlyAt(15);
 
         //크롤링 체크
-        $schedule->command('crawler:check')->timezone('asia/seoul')->hourly();
+        $schedule->command('crawler:check')->timezone('asia/seoul')->hourlyAt(20);
 
         //push
         //개별 발송
