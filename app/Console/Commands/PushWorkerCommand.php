@@ -354,7 +354,7 @@ class PushWorkerCommand extends Command
 
 
         $artist_arr = Board::select('artists_id')
-                ->where('created_at', '>',  Carbon::now()->addHour(-3))
+                ->where('created_at', '>',  Carbon::now()->addHour(-1))
                 ->groupBy('artists_id')
                 ->havingRaw('count(*) > 0')
                 ->get()

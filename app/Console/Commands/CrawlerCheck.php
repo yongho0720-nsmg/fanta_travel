@@ -49,19 +49,21 @@ class CrawlerCheck extends Command
       }else{
         $send_str = "[fanta_holic] 컨텐츠 ".$logs['crawler_cnt']."개가 크롤링 되었습니다.";
 
-          Push::create([
-              'app' => 'fantaholic',
-              'batch_type' => 'A',
-              'managed_type' => 'N',
-              'user_id' => 0,
-              'title' => '새로운 게시물이 등록되었습니다. ',
-              'content' => '새로운 게시물이 등록되었습니다.',
-              'tick' => 0,
-              'push_type' => 'T',
-              'action' => 'A',
-              'state' => 'R',
-              'start_date' => Carbon::now()->addHours(-1),
-          ]);
+          if($logs['crawler_cnt'] > 0){
+            Push::create([
+                'app' => 'fantaholic',
+                'batch_type' => 'A',
+                'managed_type' => 'N',
+                'user_id' => 0,
+                'title' => '새로운 게시물이 등록되었습니다. ',
+                'content' => '새로운 게시물이 등록되었습니다.',
+                'tick' => 0,
+                'push_type' => 'T',
+                'action' => 'A',
+                'state' => 'R',
+                'start_date' => Carbon::now(),
+            ]);
+          }
 
       }
 
