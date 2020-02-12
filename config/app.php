@@ -67,8 +67,8 @@ return [
     |
     */
 
-//    'timezone' => 'Asia/Seoul',
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Seoul',
+    //'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
