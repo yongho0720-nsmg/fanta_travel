@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\CrawlerLog;
 use App\Push;
+use App\Board;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class CrawlerCheck extends Command
 {
@@ -42,14 +44,15 @@ class CrawlerCheck extends Command
     {
 
       $logs = CrawlerLog::whereBetween('created_at',[Carbon::now()->addhour(-1),Carbon::now()])->get()->last();
-
+      $new_cnt = Board::select(DB::raw('count(*) as cnt'))->where('created_at','>',Carbon::now()->addhour(-1))->get();
+      $cnt = $new_cnt[0]->cnt;
       $send_str = "";
       if(!$logs){
         $send_str = "[fanta_holic] [Error!!] 크롤링 수집이 정상적으로 수행되지 않았습니다.";
       }else{
-        $send_str = "[fanta_holic] 컨텐츠 ".$logs['crawler_cnt']."개가 크롤링 되었습니다.";
+        $send_str = "[fanta_holic] 컨텐츠 ".$cnt."개가 크롤링 되었습니다.";
 
-          if($logs['crawler_cnt'] > 0){
+          if($cnt > 0){
             Push::create([
                 'app' => 'fantaholic',
                 'batch_type' => 'A',
@@ -64,7 +67,6 @@ class CrawlerCheck extends Command
                 'start_date' => Carbon::now(),
             ]);
           }
-
       }
 
   		$query_array = array(

@@ -49,8 +49,7 @@ class CrawlerChannelCommand extends Command
 
          // 크롤러 실행 결과 수집
          CrawlerLog::create([
-             'status' => 'S',
-             'crawler_cnt' => $cnt,
+             'status' => 'S'
          ]);
      }
 }
