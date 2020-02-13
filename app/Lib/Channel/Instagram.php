@@ -33,7 +33,6 @@ class Instagram extends ChannelAbstractClass
         $cnt =0;
 
         while ($instagramPageObj['hasNextPage'] === true) {
-
             foreach ($instagramPageObj['medias'] as $key => $media) {
                 Log::info(__METHOD__.' - media - '.json_encode($media));
                 $cnt++;
@@ -78,7 +77,7 @@ class Instagram extends ChannelAbstractClass
         $board->app = env('APP_NAME');
         $board->type = $this->channelType;
         $board->post = $this->parsingPost($channelModal);
-        $board->post_type = 'img';
+        $board->post_type = $channelModal->getType() ;
         $board->title = '';
         $board->contents = $channelModal->getCaption();
         $board->sns_account = $this->channelKey;
@@ -99,10 +98,13 @@ class Instagram extends ChannelAbstractClass
         $board->ori_thumbnail = $channelModal->getImageLowResolutionUrl();
 
         //media 값이 비어서 올때가 있다
-        $data[0]['image'] = $board->thumbnail_url;
+        if($board->post_type == 'image'){
+            $data[0]['image'] = $board->thumbnail_url;
+        }else{
+            $data[0]['video']['poster'] = $board->thumbnail_url;
+        }
+
         $detailMedias = $channelModal->getSidecarMedias();
-
-
 
         foreach ($detailMedias as $detailMediaKey => $detailMedia) {
             $oriData[] = $detailMedia->getImageLowResolutionUrl();
