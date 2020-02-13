@@ -1061,7 +1061,7 @@ class Controller extends baseController
           $result['board']->xpath_ver = config('xpath')[$result['board']->type]['version'];
 
         }
-        
+
         if($result['board']->type == "twitter"){
           $result['board']->url = config('xpath')[$result['board']->type]['url'].$result['board']->sns_account."/status/".$result['board']->post;
         }else{
@@ -1090,4 +1090,19 @@ class Controller extends baseController
 
         return $this->response->set_response(0, $result);
     }
+
+    public function delete_board(Request $request, $board_id)
+    {
+
+
+      if($board_id == null) {
+          return $this->response->set_response(-4001,null);
+      }
+
+      $board = Board::where('id', $board_id)->update(["state" => 0]);
+
+      return $this->response->set_response(0,null);
+    }
+
+
 }
