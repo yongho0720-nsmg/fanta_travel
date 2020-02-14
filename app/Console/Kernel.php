@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('crawler:channel vlive')->timezone('asia/seoul')->hourlyAt(15);
 
         //크롤링 체크
-        //$schedule->command('crawler:check')->timezone('asia/seoul')->hourlyAt(20);
+        $schedule->command('crawler:check')->timezone('asia/seoul')->hourlyAt(20);
 
         //push
         //개별 발송
