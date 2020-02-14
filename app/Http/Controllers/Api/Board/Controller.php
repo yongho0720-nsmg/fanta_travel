@@ -1094,9 +1094,8 @@ class Controller extends baseController
     public function delete_board(Request $request, $board_id)
     {
 
-
       if($board_id == null) {
-          return $this->response->set_response(-4001,null);
+          return $this->response->set_response(-1001,"board id is null");
       }
 
       $board = Board::where('id', $board_id)->update(["state" => 0]);
