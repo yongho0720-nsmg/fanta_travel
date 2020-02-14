@@ -1053,6 +1053,9 @@ class Controller extends baseController
             }elseif(property_exists($data, 'video')){
               $contents_info[$i]['contents_type'] = 'vod';
               $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['vod']['xpath'];
+              if($result['board']->type == "instagram" ){
+                $contents_info[$i]['thumbnail_xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
+              }
             }
             $i++;
           }
