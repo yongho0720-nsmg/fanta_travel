@@ -172,6 +172,7 @@ class UserScoreLogsController extends Controller
                 $history->board_type = $board['type'];
                 $history->name = $board['contents'];
                 $history->thumbnail_url = $board['thumbnail_url'];
+                $history->ori_thumbnail_url = $board['ori_thumbnail_url'];
                 $history->like = $like;
                 $history->created_at = Carbon::parse($log->created_at)->diffForHumans();
                 $histories[] = $history;
@@ -196,6 +197,7 @@ class UserScoreLogsController extends Controller
                 $history->post = $log->post;
                 $history->name = $log->comment;
                 $history->thumbnail_url = $log->thumbnail_url;
+                $history->ori_thumbnail_url = $board['ori_thumbnail_url'];
                 $history->created_at =  Carbon::parse($log->created_at)->diffForHumans();
                 $histories[] = $history;
             }
