@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
     {
         //$schedule->command('crawler:all')->timezone('asia/seoul')->hourly();
         $schedule->command('crawler:channel youtube')->timezone('asia/seoul')->hourly();
-        $schedule->command('crawler:batch')->timezone('asia/seoul')->hourlyAt(33);
+        $schedule->command('crawler:batch')->timezone('asia/seoul')->hourly();
         $schedule->command('crawler:channel twitter')->timezone('asia/seoul')->hourlyAt(10);
         $schedule->command('crawler:channel vlive')->timezone('asia/seoul')->hourlyAt(15);
 
