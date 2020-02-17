@@ -134,6 +134,7 @@ Route::group(['prefix'=>'/boards'],function(){
     Route::get('/get_list/{type}','Api\Board\Controller@get_list'); // 컨텐츠 리스트
 //    Route::get('/V6/event_list','Api\Board\Controller@event_list_v6'); //이벤트 리스트V6 기획변경으로인해 안씀 이미 배포된 앱에서 사용중이라 냅둠
     Route::post('/delete/{board_id}','Api\Board\Controller@delete_board'); //게시물 삭제
+    Route::post('/update_thumbnail/{board_id}','Api\Board\Controller@update_thumbnail'); //썸네일 변경
 
     Route::get('/get_list_artist/','Api\Board\Controller@get_list_artist');//아티스트 리스트
     Route::get('/get_list_follow_artist/','Api\Board\Controller@get_list_follow_artist');//팔로우 아티스트 리스트

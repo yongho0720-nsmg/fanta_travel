@@ -1106,5 +1106,24 @@ class Controller extends baseController
       return $this->response->set_response(0,null);
     }
 
+    public function update_thumbnail(Request $request, $board_id)
+    {
+
+      $ori_thumbnail = $request->input('ori_thumbnail');
+      if($board_id == null) {
+          return $this->response->set_response(-1001,"board id is null");
+      }
+
+      if($request->input('ori_thumbnail') == null) {
+          return $this->response->set_response(-1001,"ori_thumbnail id is null");
+      }
+
+      $board = Board::where('id', $board_id)->update(["ori_thumbnail" => $ori_thumbnail]);
+
+      return $this->response->set_response(0,null);
+    }
+
+
+
 
 }
