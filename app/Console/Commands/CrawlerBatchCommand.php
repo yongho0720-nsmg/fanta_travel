@@ -51,7 +51,7 @@ class CrawlerBatchCommand extends Command{
       if(empty($this->batch->getJob($jobId))) {
             $params = [
               'jobId' => $jobId,
-              'poolId' => 'fanta_holic_crawler_instagram'
+              'poolId' => 'fanta_holic_crawler_instagram_1'
             ];
             $result = $this->batch->addJob($params);
       }
