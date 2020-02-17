@@ -240,6 +240,19 @@ class Controller extends baseController
         $response['shared_url'] = config('celeb')[$params['app']]['shared_url'];
         $response['count'] = count($response['body']);
         $response['body'] = $lobbyClass->list_parsing($response['body'], $user);
+
+        $bn=0;
+        foreach($response['body'] as $body){ // 유투브 썸네일 크롭 전 이미지 사이즈 출력
+          if($body->type == "youtube"){
+            $response['body'][$bn]->ori_thumbnail_h = $response['body'][$bn]->thumbnail_h + 90;
+            $response['body'][$bn]->ori_thumbnail_w = $response['body'][$bn]->thumbnail_w;
+          }else{
+            $response['body'][$bn]->ori_thumbnail_h = $response['body'][$bn]->thumbnail_h;
+            $response['body'][$bn]->ori_thumbnail_w = $response['body'][$bn]->thumbnail_w;
+          }
+          $bn++;
+        }
+
         return $this->response->set_response(0, $response);
     }
 
