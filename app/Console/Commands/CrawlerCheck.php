@@ -55,8 +55,8 @@ class CrawlerCheck extends Command
           if($cnt > 0){
             Push::create([
                 'app' => 'fantaholic',
-                'batch_type' => 'A',
-                'managed_type' => 'N',
+                'batch_type' => 'N',
+                'managed_type' => 'M',
                 'user_id' => 0,
                 'title' => '새로운 게시물이 등록되었습니다. ',
                 'content' => '새로운 게시물이 등록되었습니다.',

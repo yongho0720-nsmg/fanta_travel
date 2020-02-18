@@ -135,7 +135,7 @@ class PushWorkerCommand extends Command
                 ->update([
                     'state' => 'S'
                 ]);
-                
+
             $success = $fail = 0;
             for ($i = 0; $i < $loop; $i++) {
                 $offset = $i * $limit;
@@ -388,9 +388,10 @@ class PushWorkerCommand extends Command
 
             $loop = (int) ceil($count / $limit);
 
-            $push->update([
-                'state'=>'S'
-            ]);
+            Push::where('id', $push->id)
+                ->update([
+                    'state' => 'S'
+                ]);
 
             $success = $fail = 0;
             for ($i = 0; $i < $loop; $i++) {
