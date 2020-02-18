@@ -40,6 +40,7 @@ class SearchController extends Controller
                 return $q->whereLike(['title', 'contents'], $params['schKeyword']);
             })
             ->where('state', 1)
+            ->where('post','NOT LIKE','%.%')
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get()->map(function ($board) {
@@ -167,6 +168,7 @@ class SearchController extends Controller
         if ($params['schType'] === "board") {
             $result = Board::whereNotIn('type', ['fanfeed'])
                 ->whereLike(['title', 'contents'], $params['schKeyword'])
+                ->where('post','NOT LIKE','%.%')
                 ->where('state', 1)
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
