@@ -182,12 +182,13 @@ class SearchController extends Controller
                     'title' => $board->title,
                     'contents' => $board->contents,
                     'thumbnail_url' => $board->thumbnail_url,
+                    'ori_thumbnail' => $board->ori_thumbnail,
                     'created_at' => $board->created_at->diffForHumans()
                 ];
             })->toArray();
         }
 
-        if ($params['schType'] === "fan_feed") {
+        /*if ($params['schType'] === "fan_feed") {
             $result = Board::whereIn('type', ['fanfeed'])
                 ->whereLike(['title', 'contents'], $params['schKeyword'])
                 ->where('state', 1)
@@ -275,7 +276,7 @@ class SearchController extends Controller
                     array_push($result, $val);
                 }
             }
-        }
+        }*/
 
 
         $result = array_merge(['data' => $result], $pageInfo);
