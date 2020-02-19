@@ -29,9 +29,9 @@ class Controller extends baseController
 
         $user = Auth('api')->user();
 
-        if(!$request->input('artist_id')){
+        /*if(!$request->input('artist_id')){
             return $this->response->set_response(-2001,null);
-        }
+        }*/
         if(!$request->input('artist_type')){
             return $this->response->set_response(-2001,null);
         }
