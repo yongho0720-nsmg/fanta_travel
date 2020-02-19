@@ -47,7 +47,7 @@ class CrawlerBatchCommand extends Command{
      */
     public function handle()
     {
-      $jobId = sprintf("crawler_insta-%s", now()->format('YmdH'));
+      $jobId = sprintf("crawler_insta-%s", now()->format('Ymd'));
       if(empty($this->batch->getJob($jobId))) {
             $params = [
               'jobId' => $jobId,
@@ -55,7 +55,7 @@ class CrawlerBatchCommand extends Command{
             ];
             $result = $this->batch->addJob($params);
       }
-      $taskId = sprintf("%s-task-%s", $jobId, now()->format('His'));
+      $taskId = sprintf("%s-task-%s", $jobId, now()->format('Hi'));
 
       if (empty($this->batch->getTask($jobId, $taskId)) === false) {
           return false;
