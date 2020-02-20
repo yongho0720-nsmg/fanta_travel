@@ -352,8 +352,6 @@ class PushWorkerCommand extends Command
             ->limit(1)
             ->first();
 
-
-
         $artist_arr = Board::select('artists_id')
                 ->where('created_at', '>',  Carbon::now()->addHour(-1))
                 ->groupBy('artists_id')

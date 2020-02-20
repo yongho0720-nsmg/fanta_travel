@@ -45,6 +45,12 @@ class Kernel extends ConsoleKernel
             ->everyMinute()
             // 중복 실행 방지
             ->withoutOverlapping();
+
+        // 전체 발송
+        $schedule->command('push:worker N')
+            ->everyMinute()
+            // 중복 실행 방지
+            ->withoutOverlapping();
     }
 
     /**
