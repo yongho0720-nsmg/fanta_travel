@@ -44,29 +44,33 @@ class CrawlerCheck extends Command
     {
 
       $logs = CrawlerLog::whereBetween('created_at',[Carbon::now()->addhour(-1),Carbon::now()])->get()->last();
-      $new_cnt = Board::select(DB::raw('count(*) as cnt'))->where('created_at','>',Carbon::now()->addhour(-1))->get();
-      $cnt = $new_cnt[0]->cnt;
-      $send_str = "";
-      if(!$logs){
-        $send_str = "[fanta_holic] [Error!!] 크롤링 수집이 정상적으로 수행되지 않았습니다.";
-      }else{
-        $send_str = "[fanta_holic] 컨텐츠 ".$cnt."개가 크롤링 되었습니다.";
+      $new_cnt = Board::select('type', DB::raw('count(*) as cnt'))->where('created_at','>',Carbon::now()->addhour(-1))->groupBy('type')->get();
 
-          if($cnt > 0){
-            Push::create([
-                'app' => 'fantaholic',
-                'batch_type' => 'N',
-                'managed_type' => 'M',
-                'user_id' => 0,
-                'title' => '새로운 게시물이 등록되었습니다. ',
-                'content' => '새로운 게시물이 등록되었습니다.',
-                'tick' => 0,
-                'push_type' => 'T',
-                'action' => 'A',
-                'state' => 'R',
-                'start_date' => Carbon::now(),
-            ]);
-          }
+
+      //$cnt = $new_cnt[0]->cnt;
+      $send_str = "[크롤링 현황]\n";
+      foreach($new_cnt as $cnt){
+        if(!$logs){
+          $send_str .= "[fanta_holic] [Error!!] 크롤링 수집이 정상적으로 수행되지 않았습니다.\n";
+        }else{
+          $send_str .= "[fanta_holic] - [".$cnt['type']."] 컨텐츠 ".$cnt['cnt']."개\n";
+
+            if($cnt['cnt'] > 0){
+              Push::create([
+                  'app' => 'fantaholic',
+                  'batch_type' => 'N',
+                  'managed_type' => 'M',
+                  'user_id' => 0,
+                  'title' => '새로운 게시물이 등록되었습니다. ',
+                  'content' => '새로운 게시물이 등록되었습니다.',
+                  'tick' => 0,
+                  'push_type' => 'T',
+                  'action' => 'A',
+                  'state' => 'R',
+                  'start_date' => Carbon::now(),
+              ]);
+            }
+        }
       }
 
   		$query_array = array(
