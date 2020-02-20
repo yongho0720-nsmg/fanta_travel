@@ -105,7 +105,7 @@ class UserScoreLogsController extends Controller
 
         if(in_array($type,['S','ALL']) ){
             $logs = UserScoreLog::where('app',$app)
-                ->where('user_id',$user->id)
+                ->where('user_id',$user_id)
                 ->where('type','S')
                 ->orderByDesc('created_at')
                 ->Paginate($page_count,['*'],'next',$next);
@@ -180,7 +180,7 @@ class UserScoreLogsController extends Controller
         }elseif (in_array($type,['C','ALL']) ){
             $logs = Comment::where('comments.app',$app)
                 ->join('boards','boards.id', '=','comments.board_id' )
-                ->where('comments.user_id',$user->id)
+                ->where('comments.user_id',$user_id)
                 ->orderByDesc('comments.created_at')
                 ->Paginate($page_count,['*'],'next',$next);
 
