@@ -105,7 +105,7 @@ class UserScoreLogsController extends Controller
 
         if(in_array($type,['S','ALL']) ){
             $logs = UserScoreLog::where('app',$app)
-                ->where('user_id',$user_id)
+                ->where('user_id',$user->id)
                 ->where('type','S')
                 ->orderByDesc('created_at')
                 ->Paginate($page_count,['*'],'next',$next);
@@ -180,7 +180,7 @@ class UserScoreLogsController extends Controller
         }elseif (in_array($type,['C','ALL']) ){
             $logs = Comment::where('comments.app',$app)
                 ->join('boards','boards.id', '=','comments.board_id' )
-                ->where('comments.user_id',$user_id)
+                ->where('comments.user_id',$user->id)
                 ->orderByDesc('comments.created_at')
                 ->Paginate($page_count,['*'],'next',$next);
 
@@ -197,7 +197,7 @@ class UserScoreLogsController extends Controller
                 $history->post = $log->post;
                 $history->name = $log->comment;
                 $history->thumbnail_url = $log->thumbnail_url;
-                $history->ori_thumbnail_url = $board['ori_thumbnail_url'];
+                $history->ori_thumbnail_url = $log['ori_thumbnail_url'];
                 $history->created_at =  Carbon::parse($log->created_at)->diffForHumans();
                 $histories[] = $history;
             }
