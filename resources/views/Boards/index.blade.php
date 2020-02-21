@@ -27,10 +27,11 @@
                                 <div class="card-header">
                                     <div class="float-left mt-2">전체 게시물 ( {{$total}} )</div>
                                     <div class="float-right">
-                                        <a href="{{route('board.new')}}" class="btn btn-primary">신규</a>
+                                        <a href="{{route('board.new', ['type'=>'news'])}}" class="btn btn-primary">신규</a>
                                         {{--<a href="/admin/campaigns/create" class="btn btn-success mb-2" role="button">새 게시물</a>--}}
                                         {{--                                    <button type="button" id="create_notice_button" class="btn btn-success mb-2">new</button>--}}
                                         {{--                                    <button id="delete_button" class="btn btn-danger mb-2" disabled>삭제(미완성)</button>--}}
+
                                     </div>
                                 </div>
                                 <div class="card-body">
