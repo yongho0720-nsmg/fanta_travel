@@ -169,7 +169,7 @@ class BoardController extends BaseController
             'app_review'    =>  $request->input('app_review',null),
             'search'    =>  $request->input('search')
         ];
-//        dd($params);
+        //dd($params);
         // 영어 숫자 => true    그외 false
         $params['is_eng_or_num'] = ctype_alnum($params['tags']);
 
@@ -295,6 +295,7 @@ class BoardController extends BaseController
         $params = [
             'type'          =>  $request->input('type'),
             'post'          =>  $request->input('url'),
+            'data'          =>  $request->input('data'),
             'sns_account'   =>  $request->input('sns_account'),
             'ori_tag'       =>  $request->input('create_tag'),
             'title'         =>  $request->input('title'),
@@ -303,11 +304,12 @@ class BoardController extends BaseController
             'contents'      =>  $request->input('contents'),
             'created_at'  =>  $request->input('created_at',Carbon::now('Asia/Seoul')->toDateTimeString()),
         ];
+
         $user = $request->user();
         if($user != null){
             $params['app'] = $user->app;
         }else{
-            $params['app'] = 'pinxy';
+            $params['app'] = 'fantaholic';
         }
 
         //중복 게시물이 있을경우 알람 뛰우면서 해당게시물 리턴
@@ -343,13 +345,17 @@ class BoardController extends BaseController
         //2019.01.29 cch 태그 중복 제거
         $ori_tag = explode(',',implode(',',array_unique($ori_tags)));
 
-        $json_tag = json_encode($ori_tag);
+        $json_tag = null;
+        if(!empty($oriTag)){
+            $json_tag = json_encode($ori_tag);
+        }
 
         $document = [
             'type'          =>  $params['type'],
             "app"           =>  $params['app'],
             'title'         =>  $params['title'],
             'post'           =>  $params['post'],
+            'data'           =>  $params['data'],
             'sns_account'   =>  $params['sns_account'],
             "ori_tag"          => $json_tag,
             "created_at"  =>  $params['created_at'],
@@ -358,6 +364,7 @@ class BoardController extends BaseController
             'contents'      =>  $params['contents'],
             'recorded_at'   =>  Carbon::now()
         ];
+
 
         // file save
         $util = new Util();
@@ -380,13 +387,28 @@ class BoardController extends BaseController
                 $image_save->image = "/".$path.$resized_image['filename'];
                 $data[] = $image_save;
             }
-            $document['data'] = json_encode($data);
+            $document['data'] = '[{"image":"'.$image_save->image.'"}]';
+            //dd($document['data']);
         }else{ //데이터가 없으면 썸네일로 채워둠
-            $data = new \stdClass();
-            $data->image = $document['thumbnail_url'];
-            $document['data'] = json_encode([$data]);
-        }
+            $data = array([
+                'image' => $document['thumbnail_url']
+            ]);
+            $document['data'] = $data;
+            //$document['data'] = json_encode($data);
+            //dd($data);
+//            $document['data'] = json_encode($data);
+//            $document['data'] = $data;
+//            $document['data'] = json_encode($data, JSON_UNESCAPED_SLASHES);
+//            $document['data'] = str_replace('\\/', '/', json_encode($data));
+//            $document['data'] = json_encode($data, JSON_FORCE_OBJECT);
+//            $document['data'] = json_encode($data, JSON_PRETTY_PRINT);
+//            $document['data'] = json_encode($data, JSON_UNESCAPED_SLASHES);
+//            dd($data);
 
+
+
+        }
+        //dd($document['data']);
         // Insert DB
         $board = Board::create($document);
         UpdateLog::create([
