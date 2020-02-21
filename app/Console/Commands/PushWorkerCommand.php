@@ -131,9 +131,10 @@ class PushWorkerCommand extends Command
 
             $loop = (int) ceil($count / $limit);
 
-            $push->update([
-                'state'=>'S'
-            ]);
+            Push::where('id', $push->id)
+                ->update([
+                    'state' => 'S'
+                ]);
 
             $success = $fail = 0;
             for ($i = 0; $i < $loop; $i++) {
@@ -351,8 +352,6 @@ class PushWorkerCommand extends Command
             ->limit(1)
             ->first();
 
-
-
         $artist_arr = Board::select('artists_id')
                 ->where('created_at', '>',  Carbon::now()->addHour(-1))
                 ->groupBy('artists_id')
@@ -387,9 +386,10 @@ class PushWorkerCommand extends Command
 
             $loop = (int) ceil($count / $limit);
 
-            $push->update([
-                'state'=>'S'
-            ]);
+            Push::where('id', $push->id)
+                ->update([
+                    'state' => 'S'
+                ]);
 
             $success = $fail = 0;
             for ($i = 0; $i < $loop; $i++) {

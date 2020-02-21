@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
     {
         //$schedule->command('crawler:all')->timezone('asia/seoul')->hourly();
         $schedule->command('crawler:channel youtube')->timezone('asia/seoul')->hourly();
-        $schedule->command('crawler:channel instagram')->timezone('asia/seoul')->hourlyAt(05);
+        $schedule->command('crawler:batch')->timezone('asia/seoul')->hourly();
         $schedule->command('crawler:channel twitter')->timezone('asia/seoul')->hourlyAt(10);
         $schedule->command('crawler:channel vlive')->timezone('asia/seoul')->hourlyAt(15);
 
@@ -42,6 +42,12 @@ class Kernel extends ConsoleKernel
 
         // 전체 발송
         $schedule->command('push:worker A')
+            ->everyMinute()
+            // 중복 실행 방지
+            ->withoutOverlapping();
+
+        // 전체 발송
+        $schedule->command('push:worker N')
             ->everyMinute()
             // 중복 실행 방지
             ->withoutOverlapping();

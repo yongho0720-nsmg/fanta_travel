@@ -40,6 +40,7 @@ class SearchController extends Controller
                 return $q->whereLike(['title', 'contents'], $params['schKeyword']);
             })
             ->where('state', 1)
+            ->where('post','NOT LIKE','%.%')
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get()->map(function ($board) {
@@ -50,11 +51,12 @@ class SearchController extends Controller
                     'title' => $board->title,
                     'contents' => $board->contents,
                     'thumbnail_url' => $board->thumbnail_url,
+                    'ori_thumbnail' => $board->ori_thumbnail,
                     'created_at' => $board->created_at->diffForHumans()
                 ];
             })->toArray();
 
-        $fanFeedList = Board::whereIn('type', ['fanfeed'])
+        /*$fanFeedList = Board::whereIn('type', ['fanfeed'])
             ->where(function ($q) use ($params) {
                 return $q->whereLike(['title', 'contents'], $params['schKeyword']);
             })
@@ -139,15 +141,15 @@ class SearchController extends Controller
             foreach ($albums as $key => $val) {
                 array_push($artistList, $val);
             }
-        }
+        }*/
 
         $result['more']['board_more'] = (4 < count($boardList)) ? true : false;
-        $result['more']['fan_feed_more'] = (4 < count($fanFeedList)) ? true : false;
-        $result['more']['music_more'] = (4 < count($artistList)) ? true : false;
+        //$result['more']['fan_feed_more'] = (4 < count($fanFeedList)) ? true : false;
+        //$result['more']['music_more'] = (4 < count($artistList)) ? true : false;
 
         $result['board_list'] = array_slice($boardList, 0, 4);
-        $result['fan_feed_list'] = array_slice($fanFeedList, 0, 4);
-        $result['music_list'] = array_slice($artistList, 0, 4);
+        //$result['fan_feed_list'] = array_slice($fanFeedList, 0, 4);
+        //$result['music_list'] = array_slice($artistList, 0, 4);
 
         return Response::json(($this->response->set_response(0, $result)), 200);
     }
@@ -166,6 +168,7 @@ class SearchController extends Controller
         if ($params['schType'] === "board") {
             $result = Board::whereNotIn('type', ['fanfeed'])
                 ->whereLike(['title', 'contents'], $params['schKeyword'])
+                ->where('post','NOT LIKE','%.%')
                 ->where('state', 1)
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
@@ -181,12 +184,13 @@ class SearchController extends Controller
                     'title' => $board->title,
                     'contents' => $board->contents,
                     'thumbnail_url' => $board->thumbnail_url,
+                    'ori_thumbnail' => $board->ori_thumbnail,
                     'created_at' => $board->created_at->diffForHumans()
                 ];
             })->toArray();
         }
 
-        if ($params['schType'] === "fan_feed") {
+        /*if ($params['schType'] === "fan_feed") {
             $result = Board::whereIn('type', ['fanfeed'])
                 ->whereLike(['title', 'contents'], $params['schKeyword'])
                 ->where('state', 1)
@@ -274,7 +278,7 @@ class SearchController extends Controller
                     array_push($result, $val);
                 }
             }
-        }
+        }*/
 
 
         $result = array_merge(['data' => $result], $pageInfo);

@@ -240,6 +240,19 @@ class Controller extends baseController
         $response['shared_url'] = config('celeb')[$params['app']]['shared_url'];
         $response['count'] = count($response['body']);
         $response['body'] = $lobbyClass->list_parsing($response['body'], $user);
+
+        $bn=0;
+        foreach($response['body'] as $body){ // 유투브 썸네일 크롭 전 이미지 사이즈 출력
+          if($body->type == "youtube"){
+            $response['body'][$bn]->ori_thumbnail_h = $response['body'][$bn]->thumbnail_h + 90;
+            $response['body'][$bn]->ori_thumbnail_w = $response['body'][$bn]->thumbnail_w;
+          }else{
+            $response['body'][$bn]->ori_thumbnail_h = $response['body'][$bn]->thumbnail_h;
+            $response['body'][$bn]->ori_thumbnail_w = $response['body'][$bn]->thumbnail_w;
+          }
+          $bn++;
+        }
+
         return $this->response->set_response(0, $response);
     }
 
@@ -1053,6 +1066,9 @@ class Controller extends baseController
             }elseif(property_exists($data, 'video')){
               $contents_info[$i]['contents_type'] = 'vod';
               $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['vod']['xpath'];
+              if($result['board']->type == "instagram" ){
+                $contents_info[$i]['thumbnail_xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
+              }
             }
             $i++;
           }
@@ -1061,7 +1077,7 @@ class Controller extends baseController
           $result['board']->xpath_ver = config('xpath')[$result['board']->type]['version'];
 
         }
-        
+
         if($result['board']->type == "twitter"){
           $result['board']->url = config('xpath')[$result['board']->type]['url'].$result['board']->sns_account."/status/".$result['board']->post;
         }else{
@@ -1090,4 +1106,37 @@ class Controller extends baseController
 
         return $this->response->set_response(0, $result);
     }
+
+    public function delete_board(Request $request, $board_id)
+    {
+
+      if($board_id == null) {
+          return $this->response->set_response(-1001,"board id is null");
+      }
+
+      $board = Board::where('id', $board_id)->update(["state" => 0]);
+
+      return $this->response->set_response(0,null);
+    }
+
+    public function update_thumbnail(Request $request, $board_id)
+    {
+
+      $ori_thumbnail = $request->input('ori_thumbnail');
+      if($board_id == null) {
+          return $this->response->set_response(-1001,"board id is null");
+      }
+
+      if($request->input('ori_thumbnail') == null) {
+          return $this->response->set_response(-1001,"ori_thumbnail id is null");
+      }
+
+      $board = Board::where('id', $board_id)->update(["ori_thumbnail" => $ori_thumbnail]);
+
+      return $this->response->set_response(0,null);
+    }
+
+
+
+
 }
