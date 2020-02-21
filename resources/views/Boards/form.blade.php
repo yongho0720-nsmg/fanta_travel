@@ -7,23 +7,23 @@
 @endpush
 @section('content')
     <main class="main">
-        <form action="{{ (!empty($info)) ? route('board.show', ['id'=>$info->id]) : route('board.store') }}"
-              method="POST" enctype="multipart/form-data">
-            @csrf
-            @if( !empty($info->id) )
-                <input type="hidden" name="_method" value="PUT">
-            @endif
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="/admin">홈</a>
-                </li>
-                <li class="breadcrumb-item">게시물 관리</li>
-                <li class="breadcrumb-item active"><strong>전체</strong></li>
-            </ol>
-            <div class="container-fluid">
-                <div class="animated fadeIn">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-12">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/admin">홈</a>
+            </li>
+            <li class="breadcrumb-item">게시물 관리</li>
+            <li class="breadcrumb-item active"><strong>전체</strong></li>
+        </ol>
+        <div class="container-fluid">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <form action="{{ (!empty($info)) ? route('board.show', ['id'=>$info->id]) : route('board.store') }}"
+                              method="POST" enctype="multipart/form-data">
+                            @csrf
+                            @if( !empty($info->id) )
+                                <input type="hidden" name="_method" value="PUT">
+                            @endif
                             <div class="card">
                                 @if (Session::has('message'))
                                     <div class="alert alert-danger font-weight-bold">{{ Session::get('message') }}</div>
@@ -59,11 +59,13 @@
                                                     @endphp
                                                     <select class="form-control" name="type">
                                                         <option value="">선택해주세요</option>
+
                                                         @foreach( $channelConfig as $channelKey => $channelVal)
                                                             <option value="{{$channelKey}}"
-                                                                    @if($channel ==  $channelKey ) selected
+                                                                    @if(!empty($type) && $type === $channelKey) selected
                                                                     @else disabled @endif>{{$channelVal}}</option>
                                                         @endforeach
+
                                                     </select>
                                                 </div>
                                             </div>
@@ -109,11 +111,15 @@
                                             <div class="form-group row">
                                                 <label for="thumbnails" class="col-sm-2 col-form-label text-center">
                                                     기존 데이터
+{{--                                                    {{ json_decode($info->data)[0]->image }}--}}
                                                 </label>
                                                 <div class="col-sm-10">
+
                                                     @if(isset($info->data) && $info->type != 'fanfeed')
 
                                                         <div class="col bxslider">
+
+
                                                             @foreach($info->data as $val)
                                                                 @if(isset($val->image))
                                                                     <div>
@@ -173,11 +179,10 @@
                                                 <div class="col-sm-10">
                                                     <textarea type="text" class="form-control h-100" id="contents"
                                                               name="contents"
-                                                    >
-                                                        {{isset($info->contents)? $info->contents : ''}}
-                                                    </textarea>
+                                                    >{{isset($info->contents)? $info->contents : ''}}</textarea>
                                                 </div>
                                             </div>
+
                                             <div class="form-group row">
                                                 <label for="ori_tag" class="col-sm-2 col-form-label text-center">자체
                                                     태그</label>
@@ -186,6 +191,7 @@
                                                            name="custom_tag"
                                                            value="{{!empty($info->custom_tag)? implode(',',$info->custom_tag) : ''}}"
                                                            placeholder="콤마(,)로 태그 분할">
+
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -221,6 +227,7 @@
                                                            readonly>
                                                 </div>
                                             </div>
+
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label text-center">오리지널 썸네일
                                                     url</label>
@@ -240,13 +247,18 @@
                                                            readonly>
                                                 </div>
                                             </div>
+
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label text-center">작성일</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" class="form-control datetimepicker"
+
+{{--                                                    <input type="text" class="form-control" id="created_at" name="created_at" value="" />--}}
+                                                    <input type="text" class="form-control datepicker"
                                                            id="created_at" name="created_at"
-                                                           value="{{isset($info->created_at)? $info->created_at : \Carbon\Carbon::now()->toDateString()}}"
+                                                           value="{{ date("Y-m-d H:i:s") }}"
                                                            readonly>
+
+
                                                 </div>
                                             </div>
 
@@ -255,56 +267,80 @@
                                 </div>
                                 <div class="card-footer text-right">
                                     <button type="submit" class="btn btn-success">전송</button>
-                                    <button type="submit" class="btn btn-danger">리스트</button>
+{{--                                    <button type="submit" class="btn btn-danger">리스트</button>--}}
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 col-sm-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="float-left mt-2"><b>댓글 관리</b></div>
-                                    <div class="float-right"></div>
-                                </div>
-                                <div class="card-body">
-                                    @if( !isset($info->comments) || count($info->comments) === 0)
-                                        <div class="text-center">
+                        </form>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="float-left mt-2"><b>댓글 관리</b></div>
+                                <div class="float-right"></div>
+                            </div>
+                            <div class="card-body">
+                                @if( empty($info->comments))
+                                    <div class="text-center">
                                         등록된 댓글이 없습니다.
-                                        </div>
-                                    @else
-                                    <ul class="media-list">
-
+                                    </div>
+                                @else
+                                    <table class="table table-responsive-sm text-center">
+                                        <thead>
+                                        <tr>
+                                            <th>댓글 ID</th>
+                                            <th>아이디</th>
+                                            <th>댓글</th>
+                                            <th>등록일</th>
+                                            <th>상태</th>
+                                            <th>관리</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
                                         @foreach($info->comments as $key => $comment)
-                                            <li class="media">
-                                                <a href="#" class="pull-left {{$comment->parent_id ? 'pl-3': ''}}" >
-                                                    <button class="btn btn-danger">삭제</button>
-                                                    <img src="https://bootdey.com/img/Content/user_1.jpg"
-                                                         width="50px"
-                                                         height="50px"
-                                                         alt=""
-                                                         class="img-circle">
-                                                </a>
-                                                <div class="media-body pl-4">
-                                                <span class="text-muted pull-right">
-                                                    <small class="text-muted">{{$comment->created_at->diffForHumans()}}</small>
-                                                </span>
-                                                    <strong class="text-success">@ {{ $comment->nickname }} </strong>
-                                                    <p>
-                                                        {{$comment->comment}}
-                                                    </p>
-                                                </div>
-                                            </li>
-                                            <hr>
+                                            <tr>
+                                                <td>{{$comment->id}}</td>
+                                                <td>{{$comment->user_nickname}}</td>
+                                                <td>{{$comment->comment}}</td>
+                                                <td>{{$comment->created_at}}</td>
+                                                <td>
+                                                    <form action="{{route('comments.put',['id'=>$comment->id])}}"
+                                                          method="post">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <select class="form-control" name="state"
+                                                                commentId="{{$comment->id}}"
+                                                                onchange="this.form.submit()">
+                                                            @foreach(\App\Enums\CommentStateType::toSelectArray() as $typeKey => $type)
+                                                                <option value="{{$typeKey}}"
+                                                                        {{ $typeKey == \App\Enums\CommentStateType::NORMAL ? 'disabled' : '' }} @if($comment->state === $typeKey)selected @endif>{{$type}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </form>
+                                                </td>
+                                                <th>
+                                                    <form action="{{route('comments.delete',array('id'=>$comment->id))}}"
+                                                          method="post">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                                onclick="if(!confirm('정말 실행하시겠습니까?'))return false;"
+                                                                class="btn btn-danger">삭제
+                                                        </button>
+                                                    </form>
+                                                </th>
+                                            </tr>
                                         @endforeach
-                                    </ul>
-                                    @endif
-                                </div>
-                                <div class="card-footer"></div>
+                                        </tbody>
+                                    </table>
+                                @endif
                             </div>
+                            <div class="card-footer"></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
+
     </main>
 @endsection
 
