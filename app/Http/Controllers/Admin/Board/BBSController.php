@@ -29,6 +29,7 @@ class BBSController extends BaseController
 
     public function index(Request $request)
     {
+
         $logs = $this->logs->latest('created_at')->paginate(20, ['*'], 'log_page');
         Log::info(__METHOD__ . ' - request all - ' . json_encode($request->all()));
 
@@ -100,7 +101,9 @@ class BBSController extends BaseController
         $params = $request->all();
         $params['info'] = null;
         if ($id !== null) {
-            $params['info'] = Board::with('comments')->find($id);
+            $params['info'] = Board::with(['comments'])->find($id);
+            //$params['info']['data'] = json_decode($params['info']['data']);
+            $params['type'] = $params['info']['type'];
         }
 
         return view('Boards.form')->with($params);
@@ -119,24 +122,25 @@ class BBSController extends BaseController
     public function update(Request $request, $id)
     {
         $reqParams = [
-            'id',
-            'type',
-            'title',
-            'contents',
-            'state',
-            'ori_thumbnail',
-            'app_review',
-            'ori_tag',
-            'custom_tag',
+            'type'              => $request->input('type'),
+            'title'             => $request->input('title'),
+            'contents'          => $request->input('contents'),
+            'state'             => $request->input('state'),
+            'ori_thumbnail'     => $request->input('ori_thumbnail'),
+            'app_review'        => $request->input('app_review'),
+            'ori_tag'           => $request->input('ori_tag'),
+            'custom_tag'        => $request->input('custom_tag'),
         ];
+
 
         try {
 
             $params = $request->only($reqParams);
-            $params['app'] = 'BTS';
+            $params['app'] = 'fantaholic';
             if ($request->user() != null) {
                 $params['app'] = $request->user()->app;
             }
+
 
             if (empty($id)) {
                 Log::error(__METHOD__ . ' - validation fail - ' . json_encode($params));
@@ -144,9 +148,13 @@ class BBSController extends BaseController
             }
 
             $board = Board::find($id);
+
             foreach ($params as $columnName => $columnVal) {
                 if (in_array($columnName, ['ori_tag', 'custom_tag'])) {
-                    $columnVal = explode(',', $columnVal);
+                    if(!empty($columnVal)){
+                        $columnVal = explode(',', $columnVal);
+                    }
+
                 }
                 $board[$columnName] = $columnVal;
             }
@@ -210,10 +218,37 @@ class BBSController extends BaseController
                         ];
                     }
                 }
-                $board['data'] = json_encode($fanfeed_data['data']);
-            }
 
-            $board->save();
+                $board['data'] = json_encode($fanfeed_data['data']);
+
+
+            }
+            //$board = (array) $board;
+
+
+
+
+            //Board::where('id', $board['id'])->update($board);
+            $result = Board::where('id', $board['id'])->update(
+                ['title' => $board['title'],
+                'post' => $board['post'],
+                'contents' => $board['contents'],
+                'thumbnail_url' => $board['thumbnail_url'],
+                'thumbnail_w' => $board['thumbnail_w'],
+                'thumbnail_h' => $board['thumbnail_h'],
+                'ori_tag' => $board['ori_tag'],
+                'custom_tag' => $board['custom_tag'],
+                'ori_thumbnail' => $board['ori_thumbnail'],
+                'data' => $board['data'],
+                'ori_data' => $board['ori_data'],
+                'state' => $board['state'],
+                'recorded_at' => $board['recorded_at'],
+                'video_duration' => $board['video_duration'],
+                'item_count' => $board['item_count'],
+                'best_list_cnt' => $board['best_list_cnt'],
+                'created_at' => $board['created_at'],
+                'img_count' => $board['img_count'],]
+            );
 
 //            return redirect(route('board.index'))->withSuccess('등록에 성공하였습니다');
         } catch (\Exception $e) {
@@ -226,7 +261,8 @@ class BBSController extends BaseController
             return Response::json(['rst' => true], 200);
         }
         else {
-            return redirect(route('board.index'))->withSuccess('등록에 성공하였습니다');
+            return redirect('/admin/boards?schChannel='.$params['type']);
+            //return redirect(route('board.index'))->withSuccess('등록에 성공하였습니다');
         }
     }
 
