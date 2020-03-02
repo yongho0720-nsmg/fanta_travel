@@ -56,8 +56,10 @@ class Twitter extends ChannelAbstractClass
       foreach ($tweetList as $tweet) {
 
         if ($this->isValidation($tweet)) {
-          break 2;
+          //break 2;
+            continue 2;
         }
+
         $board = $this->setDataFormatting($tweet);
         $board['artists_id'] = $this->artistsId;
 
