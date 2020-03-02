@@ -50,7 +50,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('push:worker N')
             ->everyMinute()
             // 중복 실행 방지
-            ->withoutOverlapping();
+            ->withoutOverlapping()->between('9:00', '23:00');
     }
 
     /**
