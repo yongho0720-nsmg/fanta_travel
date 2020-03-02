@@ -33,7 +33,7 @@ class Twitter extends ChannelAbstractClass
   public function getChannelContents(){
     $params = [
             'screen_name' => $this->screen_name,
-            'count' => 51,
+            'count' => 20,
             'include_entities' => true,
 //            'max_id' => null,
             'format' => 'object'
