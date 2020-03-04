@@ -38,7 +38,7 @@ class LobbyClassv6
             ->where('state', 1)
             ->where('post','NOT LIKE','%.%')
             ->where('data','!=','[]')
-            ->orderby('recorded_at', 'desc')
+            ->orderby('name', 'asc')
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
 
         if (!($board_select_query->hasMorePages())) {
@@ -743,7 +743,8 @@ class LobbyClassv6
                 $type_arr = explode("," ,$this->type);
                 return $query->whereIn('team_type', $type_arr);
             })
-            ->orderby('created_at', 'desc')
+            ->orderby('name', 'asc')
+
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
 
         if (!($board_select_query->hasMorePages())) {
