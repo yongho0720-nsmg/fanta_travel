@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Board;
 
 use App\BanedWord;
 use App\Board;
+use App\Lib\Channel\Twitter;
 use App\Tag;
 use App\UpdateLog;
 use Google\Cloud\Vision\V1\AnnotateImageRequest;
@@ -18,6 +19,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller as BaseController;
 use Elasticsearch\ClientBuilder;
+
+
 
 class BoardController extends BaseController
 {
@@ -369,7 +372,8 @@ class BoardController extends BaseController
         // file save
         $util = new Util();
         $path = $params['app'].'/images/'.$params['type'].'/thumbnail/';
-        if ($request->hasFile('thumbnail'))
+
+        if($request->hasFile('thumbnail'))
         {
             $resized_image = $util->SaveThumbnailAzureFixReturnSize($request->file('thumbnail'), $path,$params['app'],$params['type']);
             $document['thumbnail_url'] = "/".$path.$resized_image['filename'];
@@ -379,9 +383,9 @@ class BoardController extends BaseController
 
         $path = $params['app'].'/file/'.$params['type'].'/src/';
         if($request->hasFile('content_files')){
-            ($request->file('content_files'));
             $data = [];
             foreach($request->file('content_files') as $file){
+                dd($request->file('content_files'), $file);
                 $resized_image = $util->SaveThumbnailAzureFixReturnSize($file, $path,$params['app'],$params['type']);
                 $image_save = new \stdClass();
                 $image_save->image = "/".$path.$resized_image['filename'];
@@ -1277,4 +1281,151 @@ class BoardController extends BaseController
             'total' => $total_cnt
         ]);
     }
+
+
+    public function file_get_contents_curl($url) {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+
+        $data = curl_exec($ch);
+        curl_close($ch);
+
+        return $data;
+    }
+
+    public function getSiteOG( $url, $specificTags=0 ){
+        $doc = new DOMDocument();
+        @$doc->loadHTML(file_get_contents($url));
+        $res['title'] = $doc->getElementsByTagName('title')->item(0)->nodeValue;
+
+        foreach ($doc->getElementsByTagName('meta') as $m){
+            $tag = $m->getAttribute('name') ?: $m->getAttribute('property');
+            if(in_array($tag,['description','keywords']) || strpos($tag,'og:')===0) $res[str_replace('og:','',$tag)] = $m->getAttribute('content');
+        }
+        return $specificTags? array_intersect_key( $res, array_flip($specificTags) ) : $res;
+    }
+
+    //네이버 news api
+    public function get_news(Request $request) {
+
+        $client_id = "QI4CBOw2COVcXoMmVb0_";
+        $client_secret = "XRgjR9vD0M";
+        $encText = urlencode("BTS");
+        $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText; // json 결과
+
+        $is_post = false;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, $is_post);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $headers = array();
+        $headers[] = "X-Naver-Client-Id: ".$client_id;
+        $headers[] = "X-Naver-Client-Secret: ".$client_secret;
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        $response = curl_exec ($ch);
+        $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        echo "status_code:".$status_code."";
+        curl_close ($ch);
+
+        if($status_code == 200) {
+            $array_data = json_decode($response, true);
+            //echo $array_data;
+            //print_r($array_data['items']);
+
+            $user = $request->user();
+
+            if ($user != null) {
+                $params['app'] = $user->app;
+            } else {
+                $params['app'] = 'fantaholic';
+            }
+
+            foreach ($array_data['items'] as $item) {
+                $document = [
+                    'app' => $params['app'],
+                    'type' => 'news',
+                    'title' => $item['title'],
+                    'contents' => $item['description'],
+                    'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate']))
+                ];
+
+                $html = $this->file_get_contents_curl($item['originallink']);
+
+                $doc = new \DOMDocument();
+                @$doc->loadHTML($html);
+
+                $metas = $doc->getElementsByTagName('meta');
+
+                $img_url = "";
+                for ($i = 0; $i < $metas->length; $i++)
+                {
+                    $meta = $metas->item($i);
+                    if($meta->getAttribute('property') == 'og:image')
+                        $img_url = $meta->getAttribute('content');
+                }
+                $document['ori_thumbnail'] = $img_url;
+
+
+
+
+
+
+                // file save
+                $util = new Util();
+                $path = 'images/'.'news'.'/thumbnail/';
+
+                $resized_image = $util->AzureUploadImage($img_url, $path, 640, '');
+//                dd($resized_image);
+                $image_save = new \stdClass();
+                $image_save->image = "/".$path.$resized_image['fileName'];
+//                $data[] = $image_save;
+//                dd($data);
+                $data = [
+                    $image_save
+                ];
+                $document['data'] = $data;
+                $document['thumbnail_url'] = $image_save->image;
+//                $document['data'] = '[{"image":"'.$image_save->image.'"}]';
+                $ori_data = [
+                    $resized_image['path']
+                ];
+                $document['ori_data'] = $ori_data;
+                //dd($data);
+
+
+
+
+                $board = Board::create($document);
+            } //for문
+
+
+
+            
+            
+            
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
