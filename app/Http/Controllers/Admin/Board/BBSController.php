@@ -29,7 +29,7 @@ class BBSController extends BaseController
 
     public function index(Request $request)
     {
-
+    //dd($request);
         $logs = $this->logs->latest('created_at')->paginate(20, ['*'], 'log_page');
         Log::info(__METHOD__ . ' - request all - ' . json_encode($request->all()));
 
