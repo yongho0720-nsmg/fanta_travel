@@ -88,7 +88,7 @@ class News extends ChannelAbstractClass
                     'title' => $item['title'],
                     'contents' => $item['description'],
                     'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
-                    'state' => 1,
+                    'state' => 0,
                 ];
             } //for문
             $html = $this->file_get_contents_curl($item['originallink']);
