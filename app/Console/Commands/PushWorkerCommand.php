@@ -369,7 +369,7 @@ class PushWorkerCommand extends Command
             // 발송 개 수
             $limit = 1000;
             $query = Device::whereIn('user_id',$user_id_arr)
-                ->where('devices.board_push',1)
+                ->where('devices.is_push',1)
                 ->where('devices.fcm_token','!=',null)
                 ->groupBy('devices.fcm_token');
             $count = $query->count();
