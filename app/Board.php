@@ -13,6 +13,7 @@ class Board extends Model
     use softDeletes;
     protected $fillable = [
         'app',
+        'artists_id',
         'user_id',
         'type',
         'post',
