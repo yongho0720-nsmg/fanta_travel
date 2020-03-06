@@ -47,8 +47,7 @@ Route::group([
     Route::group(['prefix' => '/boards'], function () {
         //Board Controller로 통합
         //리스트
-//        Route::get('/', 'Admin\Board\BBSController@index')->name('board.index');
-
+        Route::get('/', 'Admin\Board\BBSController@index')->name('board.index');
         Route::get('/new', 'Admin\Board\BBSController@show')->name('board.new');  //등록Form
         Route::get('/{id}','Admin\Board\BBSController@show')->name('board.show'); //수정Form
 
@@ -58,6 +57,7 @@ Route::group([
 
 
         Route::get('/', 'Admin\Board\BoardController@get_news')->name('board.index'); //xxxxxxxxx
+        Route::get('/', 'Admin\Board\BoardController@naver_news')->name('board.index'); //xxxxxxxxx
 
         Route::put('/{id}','Admin\Board\BBSController@update'); //수정
         Route::patch('/','Admin\Board\BBSController@patch');
