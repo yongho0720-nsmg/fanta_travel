@@ -6,6 +6,7 @@ namespace App\Lib\Channel\Factory;
 
 use App\Enums\ChannelType;
 use App\Lib\Channel\Instagram;
+use App\Lib\Channel\News;
 use App\Lib\Channel\Twitter;
 use App\Lib\Channel\VLive;
 use App\Lib\Channel\Youtube;
@@ -29,6 +30,9 @@ class ChannelFactory extends ChannelAbstractClass
                 break;
             case ChannelType::CHANNEL_INSTAGRAM:
                 $this->channel = new Instagram($crawler->auth->channelKey, $crawler->artists_id);
+
+            case ChannelType::CHANNEL_NEWS:
+                $this->channel = new NEWS($crawler->artists_id);
         }
         return $this->channel;
     }
