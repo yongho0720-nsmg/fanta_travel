@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Board;
 
 use App\BanedWord;
 use App\Board;
-use App\Lib\Channel\Twitter;
 use App\Tag;
 use App\UpdateLog;
 use Google\Cloud\Vision\V1\AnnotateImageRequest;
@@ -1314,7 +1313,7 @@ class BoardController extends BaseController
 
         $client_id = "QI4CBOw2COVcXoMmVb0_";
         $client_secret = "XRgjR9vD0M";
-        $encText = urlencode("BTS");
+        $encText = urlencode("김준수");
         $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText; // json 결과
 
         $is_post = false;
@@ -1336,7 +1335,7 @@ class BoardController extends BaseController
         if($status_code == 200) {
             $array_data = json_decode($response, true);
             //echo $array_data;
-            //print_r($array_data['items']);
+            print_r($array_data['items']);
 
             $user = $request->user();
 
@@ -1411,6 +1410,9 @@ class BoardController extends BaseController
             
         }
     }
+
+
+
 
 
 
