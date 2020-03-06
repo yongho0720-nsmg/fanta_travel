@@ -369,17 +369,7 @@ class PushWorkerCommand extends Command
             // 발송 개 수
             $limit = 1000;
             $query = Device::whereIn('user_id',$user_id_arr)
-                ->where(function($query) use($push){
-                  if($push->manage_type == 'S'){   // push 생성시 입력한 managed_type 기준으로 devices에 있는 push 받기/안받기 상태 종류 검사
-                      return $query->where('devices.streaming_push',1);
-                  }elseif ($push->managed_type == 'C'){
-                      return $query->where('devices.comment_push',1);
-                  }elseif ($push->managed_type == 'B'){
-                      return $query->where('devices.board_push',1);
-                  }else{
-                      return $query->where('devices.is_push',1);
-                  }
-                })
+                ->where('devices.board_push',1)
                 ->where('devices.fcm_token','!=',null)
                 ->groupBy('devices.fcm_token');
             $count = $query->count();
