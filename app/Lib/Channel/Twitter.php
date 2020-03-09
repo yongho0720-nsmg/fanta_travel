@@ -56,10 +56,8 @@ class Twitter extends ChannelAbstractClass
       foreach ($tweetList as $tweet) {
 
         if ($this->isValidation($tweet)) {
-          //break 2;
-            continue 2;
+            break 2;
         }
-
         $board = $this->setDataFormatting($tweet);
         $board['artists_id'] = $this->artistsId;
 
@@ -165,7 +163,7 @@ class Twitter extends ChannelAbstractClass
         //            'max_id' => null,
         'format' => 'object'
       ];
-      $limitMaxCnt = 100;
+      $limitMaxCnt = 10;
       $currentCnt = 1;
       $cnt =0;
       while ($check) {
