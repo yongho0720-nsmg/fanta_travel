@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Board;
 
 use App\BanedWord;
 use App\Board;
+use App\Lib\Channel\News;
 use App\Tag;
 use App\UpdateLog;
 use Google\Cloud\Vision\V1\AnnotateImageRequest;
@@ -1409,6 +1410,12 @@ class BoardController extends BaseController
             
             
         }
+    }
+
+
+    public function naver_news() {
+        $news = new News();
+        $news->getChannelContents();
     }
 
 
