@@ -56,8 +56,8 @@ Route::group([
         Route::delete('/{id}','Admin\Board\BBSController@delete');//삭제
 
 
-        Route::get('/', 'Admin\Board\BoardController@get_news')->name('board.index'); //xxxxxxxxx
-        Route::get('/', 'Admin\Board\BoardController@naver_news')->name('board.index'); //xxxxxxxxx
+//        Route::get('/', 'Admin\Board\BoardController@get_news')->name('board.index'); //xxxxxxxxx
+//        Route::get('/', 'Admin\Board\BoardController@naver_news')->name('board.index'); //xxxxxxxxx
 
         Route::put('/{id}','Admin\Board\BBSController@update'); //수정
         Route::patch('/','Admin\Board\BBSController@patch');
