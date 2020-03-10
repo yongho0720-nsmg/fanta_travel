@@ -402,6 +402,8 @@ class Controller extends baseController
         $user = $request->user();
         $device = $user->devices()->where('device_key', $request->input('ad_id'))->get()->last();
 
+        Log::debug(__FILE__, __LINE__, print_r($device, true));
+
         $data = [
             'user_id' => $user->id,
             'is_push' => $device->is_push,
