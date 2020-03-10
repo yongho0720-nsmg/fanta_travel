@@ -400,7 +400,7 @@ class Controller extends baseController
 
         $app = $request->app;
         $user = $request->user();
-        $device = $user->devices()->where($user_id, $request->input('ad_id'))->get()->last();
+        $device = $user->devices()->where('device_key', $request->input('ad_id'))->get()->last();
 
         $data = [
             'user_id' => $user->id,
@@ -410,7 +410,7 @@ class Controller extends baseController
             'board_push' => $device->board_push,
         ];
 
-        return $this->response->set_response(1, $data);
+        return $this->response->set_response(0, $data);
 
     }
 
