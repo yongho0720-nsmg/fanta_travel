@@ -410,7 +410,7 @@ class Controller extends baseController
             'board_push' => $device->board_push,
         ];
 
-        return $this->response->set_response(0, $data);
+        return $this->response->set_response(1, $data);
 
     }
 
