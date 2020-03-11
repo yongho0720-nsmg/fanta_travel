@@ -39,7 +39,8 @@ class News extends ChannelAbstractClass
     public function getChannelContents()
     {
         $artist_id = $this->artistsId;
-//        $artist_id = 2;
+//        $artist_id = 4;
+//        $names = \DB::connection('live')->table('artists')->where('id',$artist_id)->get();
         $names = \DB::table('artists')->where('id',$artist_id)->get();
         $client_id = "QI4CBOw2COVcXoMmVb0_";
         $client_secret = "XRgjR9vD0M";
@@ -80,11 +81,12 @@ class News extends ChannelAbstractClass
                 if ($dupleChk > 0) {
                     break;
                 }
-//                $text = $item['description'];
-//                dd($names[0]->name);
-//                $reg = preg_match_all('/'. $names[0]->name . '/', $text, $matches);
-//                dd($matches , $item);
-                $search = 'naver';
+                $text = $item['description'];
+                $reg = preg_match_all("/". $names[0]->name . "/", $text);
+                if((int)$reg < 3) {
+                    break;
+                }
+                $search = 'http://news.naver';
                 if(strpos($item['link'], $search)) {
                     $document = [
                         'artists_id' => $artist_id,
