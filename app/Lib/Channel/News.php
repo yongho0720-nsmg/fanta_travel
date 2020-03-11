@@ -97,8 +97,6 @@ class News extends ChannelAbstractClass
                         'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
                         'state' => 0,
                     ];
-
-
                     $html = $this->file_get_contents_curl(preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']));
 
                     $doc = new \DOMDocument();
@@ -131,9 +129,6 @@ class News extends ChannelAbstractClass
                             }
                         }
                     }
-
-
-
                     $board = Board::create($document);
                 }
             } //for문
@@ -236,7 +231,7 @@ class News extends ChannelAbstractClass
         $client_id = "QI4CBOw2COVcXoMmVb0_";
         $client_secret = "XRgjR9vD0M";
         $encText = urlencode($names[0]->name);
-        $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText."&display=1"; // json 결과
+        $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText."&display=1&sort=sim"; // json 결과
 
         $is_post = false;
         $ch = curl_init();
@@ -269,10 +264,14 @@ class News extends ChannelAbstractClass
             //dd($array_data['items']);
             foreach ($array_data['items'] as $item) {
                 $dupleChk = $this->isValidation($item);
-                $search = 'naver';
                 if ($dupleChk > 0) {
                     break;
                 }
+//                $text = $item['description'];
+//                dd($names[0]->name);
+//                $reg = preg_match_all('/'. $names[0]->name . '/', $text, $matches);
+//                dd($matches , $item);
+                $search = 'naver';
                 if(strpos($item['link'], $search)) {
                     $document = [
                         'artists_id' => $artist_id,
@@ -285,7 +284,6 @@ class News extends ChannelAbstractClass
                         'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
                         'state' => 0,
                     ];
-
                     $html = $this->file_get_contents_curl(preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']));
 
                     $doc = new \DOMDocument();
@@ -297,27 +295,27 @@ class News extends ChannelAbstractClass
                     for ($i = 0; $i < $metas->length; $i++)
                     {
                         $meta = $metas->item($i);
-                        if($meta->getAttribute('property') == 'og:image')
+                        if($meta->getAttribute('property') == 'og:image') {
+
                             $img_url = $meta->getAttribute('content');
-                    }
-                    // file save
-                    if($img_url !== null) {
-                        $util = new Util();
-                        $resized_image = $util->AzureUploadImage($img_url, $this->channelImagePath);
 
-                        if($resized_image['fileName'] !== null) {
-                            $document['thumbnail_url'] = '/' . $this->channelImagePath . '/' . $resized_image['fileName'];
-                            $document['thumbnail_w'] = $resized_image['width'];
-                            $document['thumbnail_h'] = $resized_image['height'];
-                            $document['ori_thumbnail'] = preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $img_url);
-                            $document['data'] = array(['image' => $document['thumbnail_url']]);
-                            $document['ori_data'] = array($document['thumbnail_url']);
+                            // file save
+                            if($img_url !== null) {
+                                $util = new Util();
+                                $resized_image = $util->AzureUploadImage($img_url, $this->channelImagePath);
+                                //dd($resized_image['fileName']);
+                                if($resized_image['fileName'] !== null) {
+                                    $document['thumbnail_url'] = '/' . $this->channelImagePath . '/' . $resized_image['fileName'];
+                                    $document['thumbnail_w'] = $resized_image['width'];
+                                    $document['thumbnail_h'] = $resized_image['height'];
+                                    $document['ori_thumbnail'] = preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $img_url);
+                                    $document['data'] = array(['image' => $document['thumbnail_url']]);
+                                    $document['ori_data'] = array($document['thumbnail_url']);
+                                }
+
+                            }
                         }
-
                     }
-
-
-
                     $board = Board::create($document);
                 }
             } //for문
