@@ -86,7 +86,7 @@ class News extends ChannelAbstractClass
                 if((int)$reg < 3) {
                     break;
                 }
-                $search = 'http://news.naver';
+                $search = 'naver';
                 if(strpos($item['link'], $search)) {
                     $document = [
                         'artists_id' => $artist_id,
