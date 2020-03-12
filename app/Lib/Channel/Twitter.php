@@ -120,7 +120,7 @@ class Twitter extends ChannelAbstractClass
               $remoteUrl = $video->url;
 
               $mp4File = $util->AzureUploadImage($remoteUrl, $this->channelViedeoPath);
-              $data[$mediaKey]['video']['src'] = "/" . $this->channelViedeoPath . '/' . $mp4File['fileName'];
+              $data[$mediaKey]['video']['src'] = "/" . $this->channelViedeoPath.$mp4File['fileName'];
               $data[$mediaKey]['video']['poster'] = $imagePath;
               break;
             }
