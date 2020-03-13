@@ -62,10 +62,11 @@ Route::group([
         Route::put('/{id}','Admin\Board\BBSController@update'); //수정
         Route::patch('/','Admin\Board\BBSController@patch');
 //        Route::put('/{board_id}','Admin\Board\BoardController@update');
+        Route::put('/select/{id}','Admin\Board\BBSController@select_update'); //게시/미게시
 
         Route::delete('/bulk','Admin\Board\BoardController@destroy');                    //삭제
         Route::put('/bulk/gender','Admin\Board\BoardController@gender_update');           //성별 수정
-        Route::put('/bulk/open','Admin\Board\BoardController@open_update');               //게시 on off
+//        Route::put('/bulk/open','Admin\Board\BoardController@open_update');               //게시 on off
         Route::put('/bulk/text','Admin\Board\BoardController@text_update');               //text_check 후 update
         Route::put('/bulk/face','Admin\Board\BoardController@face_update');
         Route::put('/bulk/tag','Admin\Board\BoardController@tag_update');                 //태그 수정
