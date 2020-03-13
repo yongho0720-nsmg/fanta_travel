@@ -44,11 +44,12 @@ class Board extends Model
         'recorded_at',
         'video_duration',
         'view_count',
-        'item_count'
+        'item_count',
+        'validation_at'
     ];
 
     protected $appends = ['like_count', 'dislike_count'];
-    protected $dates = ['deleted_at', 'created_at', 'updated_at', 'recorded_at'];
+    protected $dates = ['deleted_at', 'created_at', 'updated_at', 'recorded_at', 'validation_at'];
 //    protected $hidden = ['ori_data', 'ori_thumbnail'];
     protected $casts = [
         'id' => 'int',
