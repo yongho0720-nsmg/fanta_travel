@@ -130,6 +130,7 @@ class BBSController extends BaseController
             'app_review'        => $request->input('app_review'),
             'ori_tag'           => $request->input('ori_tag'),
             'custom_tag'        => $request->input('custom_tag'),
+            'validation_at'        => $request->input('validation_at'),
         ];
 
 
@@ -227,7 +228,6 @@ class BBSController extends BaseController
 
 
 
-
             //Board::where('id', $board['id'])->update($board);
             $result = Board::where('id', $board['id'])->update(
                 ['title' => $board['title'],
@@ -247,7 +247,8 @@ class BBSController extends BaseController
                 'item_count' => $board['item_count'],
                 'best_list_cnt' => $board['best_list_cnt'],
                 'created_at' => $board['created_at'],
-                'img_count' => $board['img_count'],]
+                'img_count' => $board['img_count'],
+                'validation_at' =>$reqParams['validation_at'],]
             );
 
 //            return redirect(route('board.index'))->withSuccess('등록에 성공하였습니다');
@@ -264,6 +265,22 @@ class BBSController extends BaseController
             return redirect('/admin/boards?schChannel='.$params['type']);
             //return redirect(route('board.index'))->withSuccess('등록에 성공하였습니다');
         }
+    }
+
+
+    public function select_update(Request $request, $id) {
+        $reqParams = [
+            'state'             => $request->input('state'),
+        ];
+
+        $board = Board::find($id);
+        $result = Board::where('id', $board['id'])->update(
+            [
+                'state' => $reqParams['state'],
+                'validation_at' => Carbon::now()->toDateTimeString(),
+            ]
+        );
+        return;
     }
 
     public function patch(Request $request)
