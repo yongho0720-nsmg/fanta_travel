@@ -44,7 +44,8 @@ class CrawlerCheck extends Command
     {
 
       $logs = CrawlerLog::whereBetween('created_at',[Carbon::now()->addhour(-1),Carbon::now()])->get()->last();
-      $new_cnt = Board::select('type', DB::raw('count(*) as cnt'))->where('created_at','>',Carbon::now()->addhour(-1))->groupBy('type')->get();
+        $new_cnt = Board::select('type', DB::raw('count(*) as cnt'))->where('created_at','>',Carbon::now()->addhour(-1))->where('type','!=','news')->groupBy('type')->get();
+        $new_news_cnt = Board::select('type', DB::raw('count(*) as cnt'))->where('validation_at','>',Carbon::now()->addhour(-1))->where('type','=','news')->groupBy('type')->get();
 
 
       //$cnt = $new_cnt[0]->cnt;
@@ -57,6 +58,10 @@ class CrawlerCheck extends Command
           $send_str .= "[fanta_holic] - [".$cnt['type']."] 컨텐츠 ".$cnt['cnt']."개\n";
           $new_push_flag = true;
         }
+      }
+
+      if($new_news_cnt[0]->cnt > 0){
+          $new_push_flag = true;
       }
 
       if($new_push_flag){
