@@ -98,7 +98,9 @@ class LobbyClassv6
               ->get();
             })
             ->where('state', 1)
-            ->where([['post','Not LIKE','%.%'],['type','=','vlive']])
+            ->where(function ($query) {
+               $query->where([['post','Not LIKE','%.%'],['type','=','vlive']])
+             })
             ->where('data','!=','[]')
             ->orderby('recorded_at', 'desc')
             ->Paginate($page_count, ['*'], 'next_page', $next_token);
