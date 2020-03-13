@@ -99,7 +99,7 @@ class LobbyClassv6
             })
             ->where('state', 1)
             ->where(function ($query) {
-               $query->where([['post','Not LIKE','%.%'],['type','=','vlive']])
+               $query->where([['post','Not LIKE','%.%'],['type','=','vlive']]);
              })
             ->where('data','!=','[]')
             ->orderby('recorded_at', 'desc')
