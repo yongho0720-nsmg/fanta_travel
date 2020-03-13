@@ -925,6 +925,7 @@ class BoardController extends BaseController
         ]);
     }
 
+
     public function text_update(Request $request){
         $validator = $this->validate($request,[
             'check_item'=>'required'
