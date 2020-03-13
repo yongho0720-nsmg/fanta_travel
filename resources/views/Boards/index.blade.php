@@ -130,7 +130,7 @@
                                                 </select>
                                             </th>
                                             <th>
-                                                <select class="form-control" name="schState">
+                                                <select class="form-control" name="schState" id="schState">
                                                     <option value="">상태</option>
                                                     @foreach( $stateConfig as $stateKey => $stateVal)
                                                         <option value="{{$stateKey}}" {{ ($params['schState'] == $stateKey && $params['schState'] != null) ? 'selected' : '' }}>{{$stateVal}}</option>
@@ -140,6 +140,7 @@
                                             <th>게시일</th>
                                             <th>수정일</th>
                                             <th>등록일</th>
+                                            <th>검수일</th>
                                             <th>관리</th>
                                         </tr>
                                         </thead>
@@ -159,7 +160,7 @@
                                                 </td>
                                                 <td>{{ \App\Enums\ChannelType::getDescription($val->type) }}</td>
                                                 <td>
-                                                    <select name="" class="form-control stateChange" id="{{$val->id}}">
+                                                    <select name="" class="form-control stateChange" id="{{$val->id}}" onchange="">
                                                         @foreach( $stateConfig as $stateKey => $stateVal)
                                                             <option value="{{$stateKey}}" {{ $stateKey == 0 ? 'disabled' : '' }}  {{ $val->state == $stateKey ? 'selected' : '' }} >{{$stateVal}}</option>
                                                         @endforeach
@@ -168,6 +169,7 @@
                                                 <td>{{$val->recorded_at}}</td>
                                                 <td>{{$val->updated_at}}</td>
                                                 <td>{{$val->created_at}}</td>
+                                                <td>{{$val->validation_at}}</td>
                                                 <td>
                                                     <a href="/admin/boards/{{$val->id}}" class="btn btn-success">수정</a>
                                                     <button class="btn btn-danger delBtn" type="button"
@@ -393,12 +395,31 @@
                 })
             }
 
+            function selectUpdate(id, state) {
+                let org_url = '/admin/boards/select/';
+                let url = org_url + id;
+                $.ajax({
+                     'type' : 'PUT',
+                     'url' : url,
+                     data : {state : state},
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '{{@csrf_token()}}',
+                    },
+                    success: function (response) {
+                        if (response.rst === true) {
+                            return true;
+                        }
+                    },
+                })
+            }
+
             $('.stateChange').change(function () {
                 let id = $(this).attr('id');
                 let state = $(this).val();
 
                 console.log('id!!', id);
-                if (stateUpdate(id, state)) {
+                if (selectUpdate(id, state)) {
                     alert('상태가 변경되었습니다');
                 }
                 console.log(id, state);
@@ -418,3 +439,5 @@
         var token = "{{csrf_token()}}";
     </script>
 @endpush
+
+
