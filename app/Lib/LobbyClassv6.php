@@ -99,8 +99,7 @@ class LobbyClassv6
             })
             ->where('state', 1)
             ->where(function ($query) {
-                $query->where([['post','Not LIKE','%.%'],['type','=','vlive']]);
-                $query->whereOr('type','news');
+                $query->where([['post','Not LIKE','%.%'],['type','=','vlive']])->orWhere('type','news');
              })
             ->where('data','!=','[]')
             ->orderby('recorded_at', 'desc')
