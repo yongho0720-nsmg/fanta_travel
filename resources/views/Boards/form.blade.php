@@ -261,8 +261,8 @@
 
 
                                                 </div>
-                                                <label class="col-sm-2 col-form-label text-center">검수일</label>
-                                                <input type="text" class="form-control datepicker"
+{{--                                                <label class="col-sm-2 col-form-label text-center">검수일</label>--}}
+                                                <input type="hidden" class="form-control datepicker"
                                                        id="validation_at" name="validation_at"
                                                        value="{{isset($info->validation_at)? $info->validation_at : ''}}"
                                                        readonly>
