@@ -102,9 +102,9 @@ class LobbyClassv6
             ->where('state', 1)
             ->where(function ($query) {
                 if($sns_type = 'news') {
-                    $query->where('type','!=','vlive');
+                    $query->where('type','!=','fanfeed');
                 } else {
-                    $query->where([['post','Not LIKE','%.%'],['type','!=','vlive']]);
+                    $query->where([['post','Not LIKE','%.%'],['type','!=','fanfeed']]);
                 }
              })
             ->where('data','!=','[]')
