@@ -75,6 +75,8 @@ class LobbyClassv6
         $this->artist_id = $artist_id;
         $this->sns_type = $sns_type;
 
+
+
         $board_select_query = Board::when($this->user_id != '', function ($query) {
               $query->addSelect(['is_like' => function($query){
                 $query->select(DB::raw('count(*) as cnt'))->from('board_likes')
@@ -99,7 +101,11 @@ class LobbyClassv6
             })
             ->where('state', 1)
             ->where(function ($query) {
-               $query->where([['post','Not LIKE','%.%'],['type','!=','vlive']]);
+                if($sns_type = 'news') {
+                    $query->where('type','!=','vlive');
+                } else {
+                    $query->where([['post','Not LIKE','%.%'],['type','!=','vlive']]);
+                }
              })
             ->where('data','!=','[]')
             ->orderby('recorded_at', 'desc')
@@ -110,6 +116,7 @@ class LobbyClassv6
         } else {
             $next_page = $next_token + 1;
         }
+
 
         $this->config = app('config')['celeb'][$app];
         $response['cdn_url'] = $this->config['cdn'];
