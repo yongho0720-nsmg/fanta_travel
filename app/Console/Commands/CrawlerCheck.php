@@ -61,6 +61,7 @@ class CrawlerCheck extends Command
       }
 
       if($new_news_cnt[0]->cnt > 0){
+          $send_str .= "[fanta_holic] - [".$cnt['type']."] 컨텐츠 ".$cnt['cnt']."개\n";
           $new_push_flag = true;
       }
 
