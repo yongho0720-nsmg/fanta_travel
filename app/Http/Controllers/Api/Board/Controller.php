@@ -1057,7 +1057,7 @@ class Controller extends baseController
 
           $contents_info = array();
 
-          if($result['board']->post_type == "sidecar"){ //컨텐츠가 여러개인 경우 다시 크롤링 
+          if(count($result['board']->data) > 2){ //컨텐츠가 여러개인 경우 다시 크롤링 
 
               $url = "https://www.instagram.com".$result['board']->post;
               $instagram = new \InstagramScraper\Instagram();
