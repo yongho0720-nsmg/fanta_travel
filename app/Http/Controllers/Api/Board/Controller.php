@@ -1052,9 +1052,62 @@ class Controller extends baseController
         $result['board']->total_like_count = BoardLike::where('boards_id', $board_id)->get()->count();
 
 
+        if($result['board']->type == "instagram" ){// vlive x-path추가, 크롤링해서 데이터 리턴
 
 
-        if($result['board']->type == "instagram" || $result['board']->type == "vlive"){
+          $contents_info = array();
+
+          if($result['board']->post_type == "sidecar"){ //컨텐츠가 여러개인 경우 다시 크롤링 
+
+              $url = "https://www.instagram.com".$result['board']->post;
+              $instagram = new \InstagramScraper\Instagram();
+
+              $media = $instagram->getMediaByUrl($url);
+
+              $detailMedias = $media->getSidecarMedias();
+              $oriData = array();
+              $i =0;
+              foreach ($detailMedias as $detailMedia) {
+
+                  if ($detailMedia->getType() === "image") {
+                      $oriData[$i]['image'] = $detailMedia->getImageLowResolutionUrl();
+                      $contents_info[$i]['contents_type'] = 'image';
+                      $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
+                  } else if ($detailMedia->getType() === "video") {
+                      $oriData[$i]['video'] = $detailMedia->getVideoStandardResolutionUrl();
+                      $contents_info[$i]['contents_type'] = 'vod';
+                      $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['vod']['xpath'];
+                      $contents_info[$i]['thumbnail_xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
+                  }
+                  $i++;
+              }
+
+              $result['board']->data = $oriData;
+
+          }else{
+            $i =0;
+            foreach($result['board']->data as $data){
+              if (property_exists($data, 'image')){
+                $contents_info[$i]['contents_type'] = 'image';
+                $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
+
+              }elseif(property_exists($data, 'video')){
+                $contents_info[$i]['contents_type'] = 'vod';
+                $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['vod']['xpath'];
+                $contents_info[$i]['thumbnail_xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
+              }
+              $i++;
+            }
+          }
+
+          $result['board']->contents_info = $contents_info ;
+          $result['board']->xpath_ver = config('xpath')[$result['board']->type]['version'];
+          //dd($oriData);
+
+        }
+
+
+        if( $result['board']->type == "vlive"){ // vlive x-path추가
 
           $contents_info = array();
           $i = 0;
@@ -1067,9 +1120,6 @@ class Controller extends baseController
             }elseif(property_exists($data, 'video')){
               $contents_info[$i]['contents_type'] = 'vod';
               $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['vod']['xpath'];
-              if($result['board']->type == "instagram" ){
-                $contents_info[$i]['thumbnail_xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
-              }
             }
             $i++;
           }
@@ -1079,7 +1129,7 @@ class Controller extends baseController
 
         }
 
-        if($result['board']->type == "twitter"){
+        if($result['board']->type == "twitter"){// twitter x-path추가
           $result['board']->url = config('xpath')[$result['board']->type]['url'].$result['board']->sns_account."/status/".$result['board']->post;
         }else{
           $result['board']->url = config('xpath')[$result['board']->type]['url'].$result['board']->post;
