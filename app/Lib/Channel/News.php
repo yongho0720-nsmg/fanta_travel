@@ -149,8 +149,10 @@ class News extends ChannelAbstractClass
         $util = new Util();
         Log::debug(__METHOD__ . ' - content - ' . json_encode($channelMode));
 
-        $client_id = "QI4CBOw2COVcXoMmVb0_";
-        $client_secret = "XRgjR9vD0M";
+//        $client_id = "QI4CBOw2COVcXoMmVb0_";
+//        $client_secret = "XRgjR9vD0M";
+        $client_id = "Rx4aMltgLR_bzikbdrDA";
+        $client_secret = "gdFrqFrRy5";
         $encText = $this->artistsId;
         $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText; // json 결과
 
