@@ -180,7 +180,7 @@ class News extends ChannelAbstractClass
             $board->app = env('APP_NAME');
             $board->type = $this->channelType;
             $board->post = $channelMode->id;
-            $board->title = htmlspecialchars_decode(strip_tags($array_data['title']));
+            $board->title = htmlspecialchars_decode(strip_tags($array_data['title']), ENT_NOQUOTES);
             $board->contents = htmlspecialchars_decode(strip_tags($array_data['description']));
             $board->ori_tag = [];
             $board->gender = 1;
