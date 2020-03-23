@@ -61,21 +61,21 @@
                                 {{--@endif--}}
                                     {{ csrf_field() }}
                                     <input type="hidden" id="id" name="id" value="{{$id}}">
-                                    <input type="hidden" id="batch_type" name="batch_type" value="{{$batch_type}}">
+{{--                                    <input type="hidden" id="batch_type" name="batch_type" value="{{$batch_type}}">--}}
                                     {{--<div class="form-group row">--}}
                                         {{--<label for="push_type" class="col-sm-2 col-form-label">개발test용 </label>--}}
                                         {{--<div class="col-sm-10">--}}
                                             {{--<input type="number" class="form-control" name="many" id="many">--}}
                                         {{--</div>--}}
                                     {{--</div>--}}
-                                    @if ($batch_type == 'P')
-                                    <div class="form-group row">
-                                        <label for="title" class="col-sm-2 col-form-label">유저 아이디</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="user_id" name="user_id" value="{{isset($rows->user_id)? $rows->user_id : $user_id}}" readonly>
-                                        </div>
-                                    </div>
-                                    @endif
+{{--                                    @if ($batch_type == 'P')--}}
+{{--                                    <div class="form-group row">--}}
+{{--                                        <label for="title" class="col-sm-2 col-form-label">유저 아이디</label>--}}
+{{--                                        <div class="col-sm-10">--}}
+{{--                                            <input type="text" class="form-control" id="user_id" name="user_id" value="{{isset($rows->user_id)? $rows->user_id : $user_id}}" readonly>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    @endif--}}
                                     <div class="form-group row">
                                         <label for="title" class="col-sm-2 col-form-label">Title <font color="red">*</font></label>
                                         <div class="col-sm-10">
@@ -92,6 +92,33 @@
                                         <label for="tick" class="col-sm-2 col-form-label">Tick <font color="red">*</font></label>
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" id="tick" name="tick" value="{{isset($rows->tick)? $rows->tick : ''}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="push_type" class="col-sm-2 col-form-label">Push
+                                            범위</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control" name="batch_type"
+                                                    id="batch_type">
+                                                <option value="">선택해주세요</option>
+                                                <option value="P" @if (isset($rows->batch_type)) {{($rows->batch_type=='P')? 'selected' : ''}} @endif>
+                                                    개별
+                                                </option>
+                                                <option value="A" @if (isset($rows->batch_type)) {{($rows->batch_type=='A')? 'selected' : ''}} @endif>
+                                                    전체
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row personForm d-none">
+                                        <label for="title" class="col-sm-2 col-form-label">유저
+                                            아이디</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control"
+                                                   id="user_id"
+                                                   name="user_id"
+                                                   placeholder="유저 아이디를 입력해주세요(여러명일경우 `,`를 입력해주세요)"
+                                                   value="{{ $rows->user_id ?? '' }}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -235,6 +262,15 @@
 @push('script')
     <script>
         $(document).ready(function(){
+            $('#batch_type').change(function () {
+               let batch_type = $(this).val();
+               if(batch_type == 'P') {
+                   $('.personForm').removeClass('d-none');
+               } else {
+                   $('.personForm').addClass('d-none');
+               }
+            });
+
             if ($('#id').val() != '0') {
                 ($("#push_type option:selected").val() == 'I') ?
                     $('.push_type_I').css('display', 'block') : $('.push_type_I').css('display', 'none');
