@@ -159,7 +159,7 @@ class PushController extends BaseController
                 'managed_type' => $params['managed_type'],
                 'user_id' => $params['user_id'],
                 'title' => $params['title'],
-                'contents' => $params['contents'],
+                'content' => $params['contents'],
                 'tick' => $params['tick'],
                 'push_type' => $params['push_type'],
                 'img_url' => $uploads,
