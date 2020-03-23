@@ -132,7 +132,7 @@
                                                         <a href="/admin/pushes/{{$val->id}}/edit">{{$val->id}}</a>
                                                     </td>
                                                     <td class="text-center">
-                                                        {{$val->contents}}
+                                                        {{$val->content}}
                                                     </td>
                                                     <td class="text-center">
                                                         {{$config['push_type'][$val->push_type]}}
