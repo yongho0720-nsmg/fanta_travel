@@ -144,7 +144,7 @@
                                                         {{$config['state'][$val->state]}}
                                                     </td>
                                                     <td class="text-center">
-                                                        {{$val->created_date}}
+                                                        {{$val->created_at}}
                                                     </td>
                                                 </tr>
                                             @endforeach
