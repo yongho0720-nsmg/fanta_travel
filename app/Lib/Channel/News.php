@@ -86,7 +86,7 @@ class News extends ChannelAbstractClass
                 if((int)$reg < 3) {
                     break;
                 }
-                $search = 'naver';
+                $search = 'naver';      //naver.com 링크로 된 뉴스만 가져오기 위해, 지정하지 않으면 모든 뉴스를 가져옴.
                 if(strpos($item['link'], $search)) {
                     $document = [
                         'artists_id' => $artist_id,
