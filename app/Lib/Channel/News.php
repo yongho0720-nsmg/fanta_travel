@@ -2,7 +2,6 @@
 
 namespace App\Lib\Channel;
 
-use Alaouy\Youtube\Facades\Youtube as YoutubeApi;
 use App\Board;
 use App\Lib\Channel\Factory\ChannelAbstractClass;
 use App\Lib\Channel\Factory\stdClass;
@@ -95,7 +94,7 @@ class News extends ChannelAbstractClass
                         'post' => $item['link'],
 //                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
                         'post_type' => 'image',
-                        'title' => strip_tags($item['title']),
+                        'title' => str_replace('&quot;', '"', strip_tags($item['title'])),
                         'contents' => strip_tags($item['description']),
                         'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
                         'state' => 0,
@@ -239,7 +238,7 @@ class News extends ChannelAbstractClass
         $client_id = "QI4CBOw2COVcXoMmVb0_";
         $client_secret = "XRgjR9vD0M";
         $encText = urlencode($names[0]->name);
-        $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText."&display=1&sort=sim"; // json 결과
+        $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText."&display=10&sort=sim"; // json 결과
 
         $is_post = false;
         $ch = curl_init();
@@ -269,7 +268,7 @@ class News extends ChannelAbstractClass
                 $params['app'] = 'fantaholic';
             }
             $cnt = 0;
-            //dd($array_data['items']);
+//            dd($array_data['items']);
             foreach ($array_data['items'] as $item) {
                 $dupleChk = $this->isValidation($item);
                 if ($dupleChk > 0) {
@@ -286,10 +285,10 @@ class News extends ChannelAbstractClass
                         'artists_id' => $artist_id,
                         'app' => env('APP_NAME'),
                         'type' => $this->channelType,
-//                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
                         'post' => $item['link'],
+//                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
                         'post_type' => 'image',
-                        'title' => strip_tags($item['title']),
+                        'title' => str_replace('&quot;', '"', strip_tags($item['title'])),
                         'contents' => strip_tags($item['description']),
                         'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
                         'state' => 0,
@@ -318,8 +317,8 @@ class News extends ChannelAbstractClass
                                     $document['thumbnail_url'] = '/' . $this->channelImagePath . '/' . $resized_image['fileName'];
                                     $document['thumbnail_w'] = $resized_image['width'];
                                     $document['thumbnail_h'] = $resized_image['height'];
-                                    $document['ori_thumbnail'] = $img_url;
 //                                    $document['ori_thumbnail'] = preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $img_url);
+                                    $document['ori_thumbnail'] = $img_url;
                                     $document['data'] = array(['image' => $document['thumbnail_url']]);
                                     $document['ori_data'] = array($document['thumbnail_url']);
                                 }
