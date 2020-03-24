@@ -29,7 +29,6 @@ class BBSController extends BaseController
 
     public function index(Request $request)
     {
-    //dd($request);
         $logs = $this->logs->latest('created_at')->paginate(20, ['*'], 'log_page');
         Log::info(__METHOD__ . ' - request all - ' . json_encode($request->all()));
 
@@ -48,7 +47,8 @@ class BBSController extends BaseController
             'app_review' => $request->input('app_review', null),
             'search' => $request->input('search')
         ];
-
+//        print_r($params);
+//        dd($params);
         if (empty($request->user()->app)) {
             Log::error(__METHOD__ . ' - user app info empty - ' . json_encode($request->user()));
 //            throw new \Exception('user app 정보가 없습니다.', 400);
@@ -63,8 +63,8 @@ class BBSController extends BaseController
 
         $total_cnt = $boardQuery->count();
         $params['pageCnt'] = 50;
-
-        $rows = $boardQuery->orderBy($params['schDateType'], 'desc')
+//        dd($params['pageCnt']);
+        $rows = $boardQuery->orderBy('created_at', 'desc')
             ->Paginate($params['pageCnt']);
 
 
