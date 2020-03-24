@@ -230,7 +230,8 @@ class News extends ChannelAbstractClass
     public function getChannelContentsAll()
     {
         $artist_id = $this->artistsId;
-//        $artist_id = 2;
+//        $artist_id = 4;
+//        $names = \DB::connection('live')->table('artists')->where('id',$artist_id)->get();
         $names = \DB::table('artists')->where('id',$artist_id)->get();
         $client_id = "QI4CBOw2COVcXoMmVb0_";
         $client_secret = "XRgjR9vD0M";
@@ -271,11 +272,12 @@ class News extends ChannelAbstractClass
                 if ($dupleChk > 0) {
                     break;
                 }
-//                $text = $item['description'];
-//                dd($names[0]->name);
-//                $reg = preg_match_all('/'. $names[0]->name . '/', $text, $matches);
-//                dd($matches , $item);
-                $search = 'naver';
+                $text = $item['description'];
+                $reg = preg_match_all("/". $names[0]->name . "/", $text);
+                if((int)$reg < 3) {
+                    break;
+                }
+                $search = 'naver';      //naver.com 링크로 된 뉴스만 가져오기 위해, 지정하지 않으면 모든 뉴스를 가져옴.
                 if(strpos($item['link'], $search)) {
                     $document = [
                         'artists_id' => $artist_id,
