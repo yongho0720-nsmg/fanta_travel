@@ -1054,51 +1054,22 @@ class Controller extends baseController
 
         if($result['board']->type == "instagram" ){// vlive x-path추가, 크롤링해서 데이터 리턴
 
-
           $contents_info = array();
 
-          if(count($result['board']->data) > 2){ //컨텐츠가 여러개인 경우 다시 크롤링 
+          $i =0;
+          foreach($result['board']->data as $data){
+            if (property_exists($data, 'image')){
+              $contents_info[$i]['contents_type'] = 'image';
+              $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
 
-              $url = "https://www.instagram.com".$result['board']->post;
-              $instagram = new \InstagramScraper\Instagram();
-
-              $media = $instagram->getMediaByUrl($url);
-
-              $detailMedias = $media->getSidecarMedias();
-              $oriData = array();
-              $i =0;
-              foreach ($detailMedias as $detailMedia) {
-
-                  if ($detailMedia->getType() === "image") {
-                      $oriData[$i]['image'] = $detailMedia->getImageLowResolutionUrl();
-                      $contents_info[$i]['contents_type'] = 'image';
-                      $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
-                  } else if ($detailMedia->getType() === "video") {
-                      $oriData[$i]['video'] = $detailMedia->getVideoStandardResolutionUrl();
-                      $contents_info[$i]['contents_type'] = 'vod';
-                      $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['vod']['xpath'];
-                      $contents_info[$i]['thumbnail_xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
-                  }
-                  $i++;
-              }
-
-              $result['board']->data = $oriData;
-
-          }else{
-            $i =0;
-            foreach($result['board']->data as $data){
-              if (property_exists($data, 'image')){
-                $contents_info[$i]['contents_type'] = 'image';
-                $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
-
-              }elseif(property_exists($data, 'video')){
-                $contents_info[$i]['contents_type'] = 'vod';
-                $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['vod']['xpath'];
-                $contents_info[$i]['thumbnail_xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
-              }
-              $i++;
+            }elseif(property_exists($data, 'video')){
+              $contents_info[$i]['contents_type'] = 'vod';
+              $contents_info[$i]['xpath'] = config('xpath')[$result['board']->type]['vod']['xpath'];
+              $contents_info[$i]['thumbnail_xpath'] = config('xpath')[$result['board']->type]['img']['xpath'];
             }
+            $i++;
           }
+
 
           $result['board']->contents_info = $contents_info ;
           $result['board']->xpath_ver = config('xpath')[$result['board']->type]['version'];
