@@ -78,11 +78,20 @@ class VLive extends ChannelAbstractClass
 
     private function parsingPost($channelModa): string
     {
-        return (!empty($channelModa->type) && strtolower($channelModa->type) == 'video') ? "video/" . $channelModa->videoSeq : $channelModa->post_id;
+        $type = '';
+        if(!empty($channelModa->type) && strtolower($channelModa->type) == 'video') {
+            $type = "video/" . $channelModa->videoSeq;
+        } else if(!empty($channelModa->image_list)){
+            $type = $channelModa->post_id;
+        }
+        return $type;
+
+//        return (!empty($channelModa->type) && strtolower($channelModa->type) == 'video') ? "video/" . $channelModa->videoSeq : print_r($channelModa->image_list[1]);
+//        return (!empty($channelModa->type) && strtolower($channelModa->type) == 'video') ? "video/" . $channelModa->videoSeq : $channelModa->post_id;
     }
 
     public function setDataFormatting( $channelMode)
-    {
+        {
         $client = new Client();
         $board = new Board();
 
@@ -94,13 +103,17 @@ class VLive extends ChannelAbstractClass
             }
 
         }
-
-//        dd($channelMode);
         Log::debug(__METHOD__ . ' - params -' . json_encode($channelMode));
 
         $board->app = env('APP_NAME');
         $board->type = $this->channelType;
         $board->post = $this->parsingPost($channelMode);
+
+        if(!empty($channelMode->type) && strtolower($channelMode->type) == 'video') {
+            $board->post_type  = 'video';
+        } else if(!empty($channelMode->image_list) && strtolower($channelMode->image_list[0]->type) == 'photo'){
+            $board->post_type  = 'image';
+        }
         $board->title = $channelMode->title;
         $board->contents = (!empty($channelMode->type) && strtolower($channelMode->type) == 'video') ? $channelMode->title : $channelMode->content;
         $board->sns_account = $this->account;
@@ -141,7 +154,8 @@ class VLive extends ChannelAbstractClass
                       preg_match('#vid"\s+:\s+(\S+)",\s+"inkey"\s+:\s+"(\S+)",#', $responseBodyContents, $matches);
                       if (isset($matches[1])) {
   //                        list(, $videoid, $key) = explode(',', $matches[1]);
-                          $videoid = trim(str_replace('"', '', $matches[1]));
+                          $videoid = trim(str_replace('"', ''
+                              , $matches[1]));
                           $key = trim(str_replace('"', '', $matches[2]));
 
                           $video_info_url = sprintf("https://apis.naver.com/rmcnmv/rmcnmv/vod/play/v2.0/%s?key=%s",$videoid,$key );

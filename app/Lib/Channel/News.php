@@ -45,7 +45,7 @@ class News extends ChannelAbstractClass
         $client_id = "QI4CBOw2COVcXoMmVb0_";
         $client_secret = "XRgjR9vD0M";
         $encText = urlencode($names[0]->name);
-        $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText."&display=1&sort=sim"; // json 결과
+        $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText."&display=10&sort=sim"; // json 결과
 
         $is_post = false;
         $ch = curl_init();
@@ -86,21 +86,22 @@ class News extends ChannelAbstractClass
                 if((int)$reg < 3) {
                     break;
                 }
-                $search = 'naver';
+                $search = 'naver';      //naver.com 링크로 된 뉴스만 가져오기 위해, 지정하지 않으면 모든 뉴스를 가져옴.
                 if(strpos($item['link'], $search)) {
                     $document = [
                         'artists_id' => $artist_id,
                         'app' => env('APP_NAME'),
                         'type' => $this->channelType,
-                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
+                        'post' => $item['link'],
+//                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
                         'post_type' => 'image',
                         'title' => strip_tags($item['title']),
                         'contents' => strip_tags($item['description']),
                         'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
                         'state' => 0,
                     ];
-                    $html = $this->file_get_contents_curl(preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']));
-
+//                    $html = $this->file_get_contents_curl(preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']));
+                    $html = $this->file_get_contents_curl($item['link']);
                     $doc = new \DOMDocument();
                     @$doc->loadHTML($html);
 
@@ -123,7 +124,8 @@ class News extends ChannelAbstractClass
                                     $document['thumbnail_url'] = '/' . $this->channelImagePath . '/' . $resized_image['fileName'];
                                     $document['thumbnail_w'] = $resized_image['width'];
                                     $document['thumbnail_h'] = $resized_image['height'];
-                                    $document['ori_thumbnail'] = preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $img_url);
+//                                    $document['ori_thumbnail'] = preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $img_url);
+                                    $document['ori_thumbnail'] = $img_url;
                                     $document['data'] = array(['image' => $document['thumbnail_url']]);
                                     $document['ori_data'] = array($document['thumbnail_url']);
                                 }
@@ -139,7 +141,8 @@ class News extends ChannelAbstractClass
 
     private function parsingPost( $channelModa): string
     {
-        $link = str_replace('https', 'http', $channelModa['link']);
+//        $link = str_replace('https', 'http', $channelModa['link']);
+        $link = $channelModa['link'];
         return $link;
     }
 
@@ -149,8 +152,10 @@ class News extends ChannelAbstractClass
         $util = new Util();
         Log::debug(__METHOD__ . ' - content - ' . json_encode($channelMode));
 
-        $client_id = "QI4CBOw2COVcXoMmVb0_";
-        $client_secret = "XRgjR9vD0M";
+//        $client_id = "QI4CBOw2COVcXoMmVb0_";
+//        $client_secret = "XRgjR9vD0M";
+        $client_id = "Rx4aMltgLR_bzikbdrDA";
+        $client_secret = "gdFrqFrRy5";
         $encText = $this->artistsId;
         $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText; // json 결과
 
@@ -178,8 +183,8 @@ class News extends ChannelAbstractClass
             $board->app = env('APP_NAME');
             $board->type = $this->channelType;
             $board->post = $channelMode->id;
-            $board->title = htmlspecialchars(strip_tags($array_data['title']));
-            $board->contents = htmlspecialchars(strip_tags($array_data['description']));
+            $board->title = htmlspecialchars_decode(strip_tags($array_data['title']), ENT_NOQUOTES);
+            $board->contents = htmlspecialchars_decode(strip_tags($array_data['description']));
             $board->ori_tag = [];
             $board->gender = 1;
             $board->state = 1;
@@ -228,7 +233,8 @@ class News extends ChannelAbstractClass
     public function getChannelContentsAll()
     {
         $artist_id = $this->artistsId;
-//        $artist_id = 2;
+//        $artist_id = 4;
+//        $names = \DB::connection('live')->table('artists')->where('id',$artist_id)->get();
         $names = \DB::table('artists')->where('id',$artist_id)->get();
         $client_id = "QI4CBOw2COVcXoMmVb0_";
         $client_secret = "XRgjR9vD0M";
@@ -269,25 +275,27 @@ class News extends ChannelAbstractClass
                 if ($dupleChk > 0) {
                     break;
                 }
-//                $text = $item['description'];
-//                dd($names[0]->name);
-//                $reg = preg_match_all('/'. $names[0]->name . '/', $text, $matches);
-//                dd($matches , $item);
-                $search = 'naver';
+                $text = $item['description'];
+                $reg = preg_match_all("/". $names[0]->name . "/", $text);
+                if((int)$reg < 3) {
+                    break;
+                }
+                $search = 'naver';      //naver.com 링크로 된 뉴스만 가져오기 위해, 지정하지 않으면 모든 뉴스를 가져옴.
                 if(strpos($item['link'], $search)) {
                     $document = [
                         'artists_id' => $artist_id,
                         'app' => env('APP_NAME'),
                         'type' => $this->channelType,
-                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
+//                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
+                        'post' => $item['link'],
                         'post_type' => 'image',
                         'title' => strip_tags($item['title']),
                         'contents' => strip_tags($item['description']),
                         'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
                         'state' => 0,
                     ];
-                    $html = $this->file_get_contents_curl(preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']));
-
+//                    $html = $this->file_get_contents_curl(preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']));
+                    $html = $this->file_get_contents_curl($item['link']);
                     $doc = new \DOMDocument();
                     @$doc->loadHTML($html);
 
@@ -310,7 +318,8 @@ class News extends ChannelAbstractClass
                                     $document['thumbnail_url'] = '/' . $this->channelImagePath . '/' . $resized_image['fileName'];
                                     $document['thumbnail_w'] = $resized_image['width'];
                                     $document['thumbnail_h'] = $resized_image['height'];
-                                    $document['ori_thumbnail'] = preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $img_url);
+                                    $document['ori_thumbnail'] = $img_url;
+//                                    $document['ori_thumbnail'] = preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $img_url);
                                     $document['data'] = array(['image' => $document['thumbnail_url']]);
                                     $document['ori_data'] = array($document['thumbnail_url']);
                                 }
