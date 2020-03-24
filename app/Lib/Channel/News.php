@@ -92,15 +92,16 @@ class News extends ChannelAbstractClass
                         'artists_id' => $artist_id,
                         'app' => env('APP_NAME'),
                         'type' => $this->channelType,
-                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
+                        'post' => $item['link'],
+//                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
                         'post_type' => 'image',
                         'title' => strip_tags($item['title']),
                         'contents' => strip_tags($item['description']),
                         'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
                         'state' => 0,
                     ];
-                    $html = $this->file_get_contents_curl(preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']));
-
+//                    $html = $this->file_get_contents_curl(preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']));
+                    $html = $this->file_get_contents_curl($item['link']);
                     $doc = new \DOMDocument();
                     @$doc->loadHTML($html);
 
@@ -123,7 +124,8 @@ class News extends ChannelAbstractClass
                                     $document['thumbnail_url'] = '/' . $this->channelImagePath . '/' . $resized_image['fileName'];
                                     $document['thumbnail_w'] = $resized_image['width'];
                                     $document['thumbnail_h'] = $resized_image['height'];
-                                    $document['ori_thumbnail'] = preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $img_url);
+//                                    $document['ori_thumbnail'] = preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $img_url);
+                                    $document['ori_thumbnail'] = $img_url;
                                     $document['data'] = array(['image' => $document['thumbnail_url']]);
                                     $document['ori_data'] = array($document['thumbnail_url']);
                                 }
@@ -139,7 +141,8 @@ class News extends ChannelAbstractClass
 
     private function parsingPost( $channelModa): string
     {
-        $link = str_replace('https', 'http', $channelModa['link']);
+//        $link = str_replace('https', 'http', $channelModa['link']);
+        $link = $channelModa['link'];
         return $link;
     }
 
@@ -283,15 +286,16 @@ class News extends ChannelAbstractClass
                         'artists_id' => $artist_id,
                         'app' => env('APP_NAME'),
                         'type' => $this->channelType,
-                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
+//                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
+                        'post' => $item['link'],
                         'post_type' => 'image',
                         'title' => strip_tags($item['title']),
                         'contents' => strip_tags($item['description']),
                         'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
                         'state' => 0,
                     ];
-                    $html = $this->file_get_contents_curl(preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']));
-
+//                    $html = $this->file_get_contents_curl(preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']));
+                    $html = $this->file_get_contents_curl($item['link']);
                     $doc = new \DOMDocument();
                     @$doc->loadHTML($html);
 
@@ -314,7 +318,8 @@ class News extends ChannelAbstractClass
                                     $document['thumbnail_url'] = '/' . $this->channelImagePath . '/' . $resized_image['fileName'];
                                     $document['thumbnail_w'] = $resized_image['width'];
                                     $document['thumbnail_h'] = $resized_image['height'];
-                                    $document['ori_thumbnail'] = preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $img_url);
+                                    $document['ori_thumbnail'] = $img_url;
+//                                    $document['ori_thumbnail'] = preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $img_url);
                                     $document['data'] = array(['image' => $document['thumbnail_url']]);
                                     $document['ori_data'] = array($document['thumbnail_url']);
                                 }
