@@ -45,7 +45,7 @@ class News extends ChannelAbstractClass
         $client_id = "QI4CBOw2COVcXoMmVb0_";
         $client_secret = "XRgjR9vD0M";
         $encText = urlencode($names[0]->name);
-        $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText."&display=1&sort=sim"; // json 결과
+        $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText."&display=10&sort=sim"; // json 결과
 
         $is_post = false;
         $ch = curl_init();
