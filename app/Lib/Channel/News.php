@@ -76,14 +76,15 @@ class News extends ChannelAbstractClass
             $cnt = 0;
             //dd($array_data['items']);
             foreach ($array_data['items'] as $item) {
+//                print_r($item);
                 $dupleChk = $this->isValidation($item);
                 if ($dupleChk > 0) {
-                    break;
+                    continue;
                 }
                 $text = $item['description'];
                 $reg = preg_match_all("/". $names[0]->name . "/", $text);
                 if((int)$reg < 3) {
-                    break;
+                    continue;
                 }
                 $search = 'naver';      //naver.com 링크로 된 뉴스만 가져오기 위해, 지정하지 않으면 모든 뉴스를 가져옴.
                 if(strpos($item['link'], $search)) {
