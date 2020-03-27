@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('crawler:channel news')->timezone('asia/seoul')->hourlyAt(50);
 
         //크롤링 체크
-        $schedule->command('crawler:check')->timezone('asia/seoul')->hourlyAt(20);
+        $schedule->command('crawler:check')->timezone('asia/seoul')->hourlyAt(20)->withoutOverlapping()->between('9:00', '23:00');
 
         //push
         //개별 발송
