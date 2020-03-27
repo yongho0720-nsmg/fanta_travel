@@ -96,7 +96,7 @@ class News extends ChannelAbstractClass
 //                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
                         'post_type' => 'image',
                         'title' => str_replace('&quot;', '"', strip_tags($item['title'])),
-                        'contents' => strip_tags($item['description']),
+                        'contents' => str_replace('$quot;', '"', strip_tags($item['description'])),
                         'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
                         'state' => 0,
                     ];
@@ -147,82 +147,10 @@ class News extends ChannelAbstractClass
         return $link;
     }
 
-    protected function setDataFormatting($channelMode)
+    protected function setDataFormatting($channelMode) // 사용안함 - 2020-03-27
     {
-        $board = new Board();
-        $util = new Util();
-        Log::debug(__METHOD__ . ' - content - ' . json_encode($channelMode));
 
-//        $client_id = "QI4CBOw2COVcXoMmVb0_";
-//        $client_secret = "XRgjR9vD0M";
-        $client_id = "Rx4aMltgLR_bzikbdrDA";
-        $client_secret = "gdFrqFrRy5";
-        $encText = $this->artistsId;
-        $url = "https://openapi.naver.com/v1/search/news.json?query=".$encText; // json 결과
-
-        $is_post = false;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, $is_post);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $headers = array();
-        $headers[] = "X-Naver-Client-Id: ".$client_id;
-        $headers[] = "X-Naver-Client-Secret: ".$client_secret;
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
-        $response = curl_exec ($ch);
-        $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        echo "status_code:".$status_code."";
-        curl_close ($ch);
-
-        if($status_code == 200) {
-            $array_data = json_decode($response, true);
-            //echo $array_data;
-            //print_r($array_data['items']);
-
-            $board->app = env('APP_NAME');
-            $board->type = $this->channelType;
-            $board->post = $channelMode->id;
-            $board->title = htmlspecialchars_decode(strip_tags($array_data['title']), ENT_NOQUOTES);
-            $board->contents = htmlspecialchars_decode(strip_tags($array_data['description']));
-            $board->ori_tag = [];
-            $board->gender = 1;
-            $board->state = 1;
-            $board->created_at = date('Y-m-d H:i:s');
-            $board->recorded_at = strftime("%Y-%m-%d %H:%M:%S", strtotime($array_data['pubDate']));
-
-
-            $html = $this->file_get_contents_curl($array_data['originallink']);
-
-            $doc = new \DOMDocument();
-            @$doc->loadHTML($html);
-
-            $metas = $doc->getElementsByTagName('meta');
-
-            $img_url = "";
-            for ($i = 0; $i < $metas->length; $i++)
-            {
-                $meta = $metas->item($i);
-                if($meta->getAttribute('property') == 'og:image')
-                    $img_url = $meta->getAttribute('content');
-            }
-            $thumbnail = $util->AzureUploadImage($img_url, $this->channelImagePath);
-            $board->thumbnail_url = "/" . $this->channelImagePath . $thumbnail['fileName'];
-            $board->thumbnail_w = (int)$thumbnail['width'];
-            $board->thumbnail_h = (int)$thumbnail['height'];
-            $board->ori_thumbnail = $img_url;
-            $board->data = array(['image' => $board->thumbnail_url]);
-            $board->ori_data = array($board->thumbnail_url);
-            $board->post = $array_data['originallink'];
-            $board->post_type = 'image';
-
-            //$board = Board::create($document);
-        } //if문
-        return $board;
     }
-
-
 
     protected function isValidation( $channelModel)
     {
@@ -270,16 +198,17 @@ class News extends ChannelAbstractClass
                 $params['app'] = 'fantaholic';
             }
             $cnt = 0;
-//            dd($array_data['items']);
+            //dd($array_data['items']);
             foreach ($array_data['items'] as $item) {
+//                print_r($item);
                 $dupleChk = $this->isValidation($item);
                 if ($dupleChk > 0) {
-                    break;
+                    continue;
                 }
                 $text = $item['description'];
                 $reg = preg_match_all("/". $names[0]->name . "/", $text);
-                if((int)$reg < 3) {
-                    break;
+                if((int)$reg < 3) {     //뉴스 갯수 줄이기 위해, 아티스트 이름이 3번 이상 들어갈 때만 가져옴.
+                    continue;
                 }
                 $search = 'naver';      //naver.com 링크로 된 뉴스만 가져오기 위해, 지정하지 않으면 모든 뉴스를 가져옴.
                 if(strpos($item['link'], $search)) {
@@ -291,17 +220,18 @@ class News extends ChannelAbstractClass
 //                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
                         'post_type' => 'image',
                         'title' => str_replace('&quot;', '"', strip_tags($item['title'])),
-                        'contents' => strip_tags($item['description']),
+                        'contents' => str_replace('$quot;', '"', strip_tags($item['description'])),
                         'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
                         'state' => 0,
                     ];
+//                    print_r($item);
 //                    $html = $this->file_get_contents_curl(preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']));
+
                     $html = $this->file_get_contents_curl($item['link']);
                     $doc = new \DOMDocument();
                     @$doc->loadHTML($html);
 
                     $metas = $doc->getElementsByTagName('meta');
-
                     $img_url = "";
                     for ($i = 0; $i < $metas->length; $i++)
                     {
@@ -333,5 +263,4 @@ class News extends ChannelAbstractClass
             } //for문
         }
     }
-
 }
