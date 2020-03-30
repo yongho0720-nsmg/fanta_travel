@@ -96,7 +96,7 @@ class News extends ChannelAbstractClass
 //                        'post' => preg_match('#^http:#', $url) ? $url : str_replace('https:', 'http:', $item['link']),
                         'post_type' => 'image',
                         'title' => str_replace('&quot;', '"', strip_tags($item['title'])),
-                        'contents' => str_replace('$quot;', '"', strip_tags($item['description'])),
+                        'contents' => str_replace('&quot;', '"', strip_tags($item['description'])),
                         'recorded_at' => strftime("%Y-%m-%d %H:%M:%S", strtotime($item['pubDate'])),
                         'state' => 0,
                     ];
