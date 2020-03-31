@@ -269,10 +269,11 @@ class Controller extends baseController
             'type' => urldecode($request->input('type')),
             'app' => $request->input('app', 'fantaholic'),
             'next_token' => $request->input('next_page', 0),
+            'search_query' => $request->input('search_query', ''),
         ];
 
         $lobbyClass = new LobbyClassv6();
-        $response = $lobbyClass->makeArtistList($params['app'], $params['next_token'], $params['type'], $user_id);
+        $response = $lobbyClass->makeArtistList($params['app'], $params['next_token'], $params['type'], $user_id, $params['search_query']);
         if (!isset($response['body']) || (isset($response['body']) && count($response['body']) == 0)) {
             return $this->response->set_response(-2001, null);
         }
