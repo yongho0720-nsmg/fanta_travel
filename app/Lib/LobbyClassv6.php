@@ -725,7 +725,7 @@ class LobbyClassv6
     }
 
     //아티스트 리스
-    public function makeArtistList($app, $next_token = 1, $type, $user_id)
+    public function makeArtistList($app, $next_token = 1, $type, $user_id, $search_query)
     {
         // Redis Connection
         if ($next_token == 0) {
@@ -733,6 +733,7 @@ class LobbyClassv6
         }
         $this->type = $type;
         $this->user_id = $user_id;
+        $this->search_query = $search_query;
         $page_count = 20;
 
         $board_select_query = Artist::Select(DB::raw("* ,0 as is_added"))
@@ -749,6 +750,9 @@ class LobbyClassv6
             ->when(($type != 'all'), function ($query) {
                 $type_arr = explode("," ,$this->type);
                 return $query->whereIn('team_type', $type_arr);
+            })
+            ->where(function ($query) {
+                $query->where('name', 'like', '%'.$this->search_query.'%')->orWhere('name_eng', 'like', '%'.$this->search_query.'%');
             })
             ->orderby('name', 'asc')
 
