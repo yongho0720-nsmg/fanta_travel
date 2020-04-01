@@ -71,7 +71,7 @@ class News extends ChannelAbstractClass
             if ($user != null) {
                 $params['app'] = env('APP_NAME');
             } else {
-                $params['app'] = 'fantaholic';
+                $params['app'] = 'fantatravel';
             }
             $cnt = 0;
             //dd($array_data['items']);
@@ -195,7 +195,7 @@ class News extends ChannelAbstractClass
             if ($user != null) {
                 $params['app'] = env('APP_NAME');
             } else {
-                $params['app'] = 'fantaholic';
+                $params['app'] = 'fantatravel';
             }
             $cnt = 0;
             //dd($array_data['items']);

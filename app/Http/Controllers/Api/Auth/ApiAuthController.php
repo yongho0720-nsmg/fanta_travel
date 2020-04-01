@@ -72,7 +72,7 @@ class ApiAuthController extends Controller
             ], 200);
         }
 
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
         // 이메일 확인
         if (User::where('email', $request->email)->where('app', $app)->count() == 0) {
             return $this->response->set_response(-3003, null);

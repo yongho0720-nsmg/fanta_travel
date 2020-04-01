@@ -67,7 +67,7 @@ class CrawlerCheck extends Command
 
       if($new_push_flag){
         Push::create([
-            'app' => 'fantaholic',
+            'app' => 'fantatravel',
             'batch_type' => 'N',
             'managed_type' => 'M',
             'user_id' => 0,

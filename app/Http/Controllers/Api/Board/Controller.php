@@ -50,7 +50,7 @@ class Controller extends baseController
         ]);
 
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
             'user_id' => $request->user()->id,
             'board_id' => $request->input('board_id')
         ];
@@ -89,7 +89,7 @@ class Controller extends baseController
         $user = Auth('api')->user();
 
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
             'users_id' => $user->id,
             'boards_id' => $request->input('board_id')
         ];
@@ -191,7 +191,7 @@ class Controller extends baseController
         $user = Auth('api')->user();
 
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
             'next_token' => $request->input('next_page', 0),
         ];
 
@@ -224,7 +224,7 @@ class Controller extends baseController
         }
 
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
             'next_token' => $request->input('next_page', 0),
             'type' => $type,
             'artist_id'=> $request->input('artist_id', 0),
@@ -267,7 +267,7 @@ class Controller extends baseController
         }
         $params = [
             'type' => urldecode($request->input('type')),
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
             'next_token' => $request->input('next_page', 0),
             'search_query' => $request->input('search_query', ''),
         ];
@@ -313,7 +313,7 @@ class Controller extends baseController
     //단일 리스트 v6
     public function single_list_v6(Request $request, $type)
     {
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
         $util = new Util();
 
         // 1 ad_id 가 검수자인가? , 2 ip가 국내인가? 3 검수용 컨텐츠만 내보내는 중인가? app('config')['celeb']['pinxy']['inspection']
@@ -378,7 +378,7 @@ class Controller extends baseController
     //좋아요 게시물 리스트
     public function list_like_board(Request $request)
     {
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
 
         //로그인한 유저인지 확인
         $user = Auth('api')->user();
@@ -460,7 +460,7 @@ class Controller extends baseController
         ]);
 
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
             'board_id' => $request->input('board_id'),
             'item_count' => $request->input('item_count')
         ];
@@ -990,7 +990,7 @@ class Controller extends baseController
     public function refresh(Request $request, $board_id)
     {
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
         ];
         $user = Auth('api')->user();
         if ($user != null && UserResponseToBoard::where('app', $params['app'])->where('board_id',
@@ -1019,7 +1019,7 @@ class Controller extends baseController
     public function refresh_v2(Request $request, $board_id)
     {
         $params = [
-            'app' => "fantaholic",
+            'app' => "fantatravel",
         ];
 
         $user = Auth('api')->user();
@@ -1114,7 +1114,7 @@ class Controller extends baseController
     public function board_info(Request $request, $board_id)
     {
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
         ];
         $user = Auth('api')->user();
 

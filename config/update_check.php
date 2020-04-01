@@ -58,7 +58,7 @@ return[
             ]
         ]
     ],
-    'fantaholic' =>[
+    'fantatravel' =>[
         'version'=>[
             'and'=>[
                 'app_ver' => '1.2.1',   // 앱 최신 버전

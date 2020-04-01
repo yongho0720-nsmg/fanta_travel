@@ -30,7 +30,7 @@ class ChannelFactory extends ChannelAbstractClass
                 break;
             case ChannelType::CHANNEL_INSTAGRAM:
                 $this->channel = new Instagram($crawler->auth->channelKey, $crawler->artists_id);
-
+                break;
             case ChannelType::CHANNEL_NEWS:
                 $this->channel = new NEWS($crawler->artists_id);
         }

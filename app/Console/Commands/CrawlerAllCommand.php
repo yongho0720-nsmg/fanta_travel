@@ -64,7 +64,7 @@ class CrawlerAllCommand extends Command
         //새로 등록된게 한개이상일떄 작업
         if ($cnt > 0) {
             Push::create([
-                'app' => 'fantaholic',
+                'app' => 'fantatravel',
                 'batch_type' => 'A',
                 'managed_type' => 'N',
                 'user_id' => 0,

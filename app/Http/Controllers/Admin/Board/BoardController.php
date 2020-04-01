@@ -312,7 +312,7 @@ class BoardController extends BaseController
         if($user != null){
             $params['app'] = $user->app;
         }else{
-            $params['app'] = 'fantaholic';
+            $params['app'] = 'fantatravel';
         }
 
         //중복 게시물이 있을경우 알람 뛰우면서 해당게시물 리턴
@@ -1344,7 +1344,7 @@ class BoardController extends BaseController
             if ($user != null) {
                 $params['app'] = $user->app;
             } else {
-                $params['app'] = 'fantaholic';
+                $params['app'] = 'fantatravel';
             }
 
             foreach ($array_data['items'] as $item) {

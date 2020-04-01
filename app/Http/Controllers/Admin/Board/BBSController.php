@@ -137,7 +137,7 @@ class BBSController extends BaseController
         try {
 
             $params = $request->only($reqParams);
-            $params['app'] = 'fantaholic';
+            $params['app'] = 'fantatravel';
             if ($request->user() != null) {
                 $params['app'] = $request->user()->app;
             }

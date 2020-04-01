@@ -792,7 +792,7 @@ class LobbyClassv6
             ->orderby('artists.created_at', 'desc')
             ->get();
 
-        $this->config = app('config')['celeb']['fantaholic'];
+        $this->config = app('config')['celeb']['fantatravel'];
         $response['cdn_url'] = $this->config['cdn'];
 
         $response['body'] = $board_select_query;

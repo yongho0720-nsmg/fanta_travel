@@ -17,7 +17,7 @@
 
 <main role="main" class="container">
 
-    <h3><b><span data-feather="log-in"></span></b>  fanta_holic</h3>
+    <h3><b><span data-feather="log-in"></span></b>  fanta_travel</h3>
 
     <form>
         <div class="form-group">

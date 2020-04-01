@@ -32,6 +32,8 @@ class CrawlerChannelCommand extends Command
          $crawlerList = Crawler::whereState('play')->where('type','=',$this->sns_name)->get();
          $cnt =0;
 
+
+
          foreach($crawlerList as $crawler )
          {
              $this->info('start '.\Illuminate\Support\Carbon::now('asia/seoul')->format('Y-m-d H:i:s'));

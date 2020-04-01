@@ -57,7 +57,7 @@ class Controller extends baseController
         }
 
         $user = $request->user();
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
         $next = $request->input('next', 0);
         $page_count = 20;
 
@@ -98,7 +98,7 @@ class Controller extends baseController
 
     public function user_ban_boards(Request $request)
     {
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
         $user_id = $request->user()->id;;
         //마이핀( 좋아요 한 게시물
         $user_response_to_boards = UserResponseToBoard::where('user_id', $user_id)
@@ -171,7 +171,7 @@ class Controller extends baseController
             ], 200);
         }
 
-        $app = $request->input('app','fantaholic');
+        $app = $request->input('app','fantatravel');
 
         $params = [
             'app' => $app,
@@ -268,7 +268,7 @@ class Controller extends baseController
                 ]
             ], 200);
         }
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
 
         $duple_check = User::where('email', $request->input('email'))->where('app', $app)->count();
         if ($duple_check > 0) {
@@ -301,7 +301,7 @@ class Controller extends baseController
             ], 200);
         }
 
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
 
         $duple_check = User::where('nickname', $request->input('nickname'))
             ->where('app', $app)->count();
@@ -363,7 +363,7 @@ class Controller extends baseController
             ], 200);
         }
 
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
 
         $duple_check = User::where('nickname', $request->input('nickname'))
             ->where('app', $app)->count();
@@ -593,7 +593,7 @@ class Controller extends baseController
         }
 
         $this->redis = app('redis');
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
         //ad_id값으로 유저 검색
 
         //탈퇴한 유저인지 확인
@@ -810,7 +810,7 @@ class Controller extends baseController
         }
 
         $this->redis = app('redis');
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
         //ad_id값으로 유저 검색
 
         //탈퇴한 유저인지 확인
@@ -1006,7 +1006,7 @@ class Controller extends baseController
         ]);
 
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
             'mobile' => $request->input('mobile')
         ];
 
@@ -1064,7 +1064,7 @@ class Controller extends baseController
         ]);
 
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
             'mobile' => $request->input('mobile'),
         ];
 
@@ -1134,7 +1134,7 @@ class Controller extends baseController
         ]);
 
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
             'mobile' => $request->input('mobile'),
             'number' => $request->input('number'),
         ];
@@ -1166,7 +1166,7 @@ class Controller extends baseController
             'app' => 'string'
         ]);
 
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
 
         $users = User::where('mobile', $request->input('mobile'))
             ->where('app', $app)
@@ -1193,7 +1193,7 @@ class Controller extends baseController
             'password' => 'required|string'
         ]);
 
-        $app = $request->input('app', 'fantaholic');
+        $app = $request->input('app', 'fantatravel');
 
         if (Hash::check($request->input('password'),
             User::where('email', $request->input('email'))->where('app', $app)->get()->first()->password)) {
@@ -1238,7 +1238,7 @@ class Controller extends baseController
             ], 200);
         }
 
-        $app = $request->input('app', 'fantaholic'); //엡이름
+        $app = $request->input('app', 'fantatravel'); //엡이름
         $user = $request->user(); //유저정보
         $now_year = Carbon::now()->year; //현재년도
         $now_month = Carbon::now()->month;  //현재월
@@ -1829,7 +1829,7 @@ class Controller extends baseController
             ], 200);
         }
         $params = [
-            'app' => $request->input('app', 'fantaholic'),
+            'app' => $request->input('app', 'fantatravel'),
             'type' => $request->input('type', 'W'),
             'next' => $request->input('next', 0)
         ];
@@ -1840,7 +1840,7 @@ class Controller extends baseController
             return $this->response->set_response(-2001, null);
         }
 
-        $app = $request->input('app', 'fantaholic'); //앱이름
+        $app = $request->input('app', 'fantatravel'); //앱이름
         $user = Auth('api')->user(); // 유저정보 비로그인시 null
         $result = [];
         $my_ranking = new \stdClass();
